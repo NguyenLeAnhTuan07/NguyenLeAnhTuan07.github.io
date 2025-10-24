@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="/image/anhdaidien2.jpg" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>&#8203;</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script> 
+ 
+  <style>
+    
+  #music-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: transparent; /* Trong suốt */
+  border: none;             /* Bỏ viền */
+  color: white;             /* Màu icon */
+  font-size: 28px;          /* Kích thước icon */
+  cursor: pointer;
+  z-index: 999;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+#music-btn:hover {
+  transform: scale(1.2);
+  color: #00ffff; /* Màu sáng khi hover */
+}
+#music-btn i {
+  text-shadow: 0 0 10px rgba(255,255,255,0.6);
+}
+   
+    @media (max-width: 500px) {
+  .container {
+    width: 90%;           /* Chiếm 90% màn hình thay vì 380px cố định */
+    padding: 20px;        /* Giảm padding cho gọn */
+    font-size: 0.9em;     /* Thu nhỏ chữ nhẹ */
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  .skills img {
+    width: 35px;
+    margin: 0 4px;
+  }
+
+  .social i {
+    font-size: 20px;
+    margin: 6px;
+  }
+}
+    .overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* màu đen mờ 40% */
+  z-index: -1; /* nằm trên video nhưng dưới nội dung */
+}
+    .social a {
+      color: white;             
+      text-decoration: none;
+      transition: transform 0.3s;
+    }
+
+    .social a:hover {
+      transform: scale(1.2);
+    }
+    .typed-cursor {
+    display: inline-block;
+    vertical-align: middle;
+  }
+    /* Làm video nền phủ toàn màn hình */
+    video.background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Giữ tỉ lệ và phủ toàn màn hình */
+      z-index: -1;       /* Cho video nằm phía sau nội dung */
+    }
+
+    /* Căn giữa nội dung */
+    .content {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 2em;
+      text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    }
+     *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .container {
+      width: 380px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
+      text-align: center;
+      padding: 30px;
+      color: white;
+      transition: 0.3s;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* glow mặc định */
+    }
+
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+
+      margin: 0 auto 15px;
+      transition: 0.3s;
+      box-shadow: 0 0 10px #f9f8f8;
+    }
+    .avatar:hover {
+    box-shadow: 0 0 20px rgb(254, 252, 253), 0 0 40px rgba(255, 250, 253, 0.7);
+  }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    h2 {
+      font-size: 1.6em;
+      margin-bottom: 10px;
+    }
+
+    #typed {
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    .status {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 20px 0;
+      transition: 0.3s;
+      box-shadow: 0 0 10px rgba(255, 0, 150, 0.5); /* glow mặc định */
+    }
+    .status:hover {
+    box-shadow: 0 0 20px rgba(255, 0, 150, 1), 0 0 40px rgba(255, 0, 150, 0.7);
+  }
+
+    .info {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      line-height: 1.6;
+      transition: 0.3s;
+      box-shadow: 0 0 10px rgba(255, 0, 150, 0.5); /* glow mặc định */
+    }
+    .info:hover {
+    box-shadow: 0 0 20px rgba(255, 0, 150, 1), 0 0 40px rgba(255, 0, 150, 0.7);
+  }
+
+    .skills img {
+      width: 40px;
+      margin: 0 5px;
+      transition: transform 0.3s;
+    }
+
+    .skills img:hover {
+      transform: scale(1.2);
+    }
+
+    .social i {
+      font-size: 22px;
+      margin: 10px 8px;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .social i:hover {
+      color: #ffffff;
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+      <script>
+    const titles = [
+      "Nguyễn Lê Anh Tuấn",
+      "Who Knows?",
+      "NguyenexLee",
+      "Welcome to my website!",
+      "Enjoy your visit 🌟"
+    ];
+
+    let currentTitle = 0;
+    let index = 0;
+    let isDeleting = false;
+    let cursorVisible = true;
+    const invisibleChar = "\u200B"; // ký tự vô hình giúp tránh hiển thị URL
+
+    function typeWriter() {
+      const text = titles[currentTitle];
+      let displayText = text.substring(0, Math.max(0, index));
+
+      // 🔹 Nếu xóa hết thì gán ký tự vô hình
+      if (displayText === "") displayText = invisibleChar;
+
+      // 🔹 Thêm con trỏ nhấp nháy
+      const cursor = cursorVisible ? "|" : " ";
+      document.title = displayText + cursor;
+
+      cursorVisible = !cursorVisible;
+
+      let speed = isDeleting ? 80 : 150;
+
+      if (!isDeleting && index < text.length) {
+        index++;
+      } else if (isDeleting && index > 0) {
+        index--;
+      } else if (!isDeleting && index === text.length) {
+        isDeleting = true;
+        speed = 1000; // dừng 1s trước khi xóa
+      } else if (isDeleting && index === 0) {
+        isDeleting = false;
+        currentTitle = (currentTitle + 1) % titles.length;
+        speed = 500;
+      }
+
+      setTimeout(typeWriter, speed);
+    }
+
+    typeWriter();
+  </script>
+    <video class="background" autoplay muted loop>
+    <source src="/assets/Video/videonen.mp4" type="video/mp4">
+  </video>
+  <div class="overlay"></div>
+
+  <div class="container">
+    <div class="avatar">
+      <img src="/image/anhdaidien2.jpg" alt="Profile picture of Nguyễn Lê Anh Tuấn">
+    </div>
+
+   <h2>
+   <span id="typed" style="display:inline-block;"></span>
+</h2>
+
+    <div class="status">
+      <p><strong>Who Knows</strong></p>
+      <p><i>Interested in: Web Development, AI, Cybersecurity, information security, learning new technologies.</i></p>
+    </div>
+
+    <div class="info">
+      <p>Nguyễn Lê Anh Tuấn</p>
+      <p>Hanoi University of Civil Engineering</p>
+      <p>Information Security Student</p>
+      <p>From Vietnam with ❤️</p>
+    </div>
+
+    <div class="skills">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg">
+    </div>
+
+    <div class="social">
+     <a href="https://www.facebook.com/whoknowsnight"><i class="fab fa-facebook"></i></a>
+     <a href="https://github.com/NguyenLeAnhTuan07"><i class="fab fa-github"></i></a>
+     <a href="https://www.tiktok.com/@nguyenexlee?lang=en"><i class="fab fa-tiktok"></i></a>
+     <a href="https://mail.google.com/mail/?view=cm&fs=1&to=tunbom056@gmail.com&su=Liên%20hệ%20với%20Tuấn%20Nguyễn&body=Chào%20Tuấn%2C%0ATôi%20muốn%20liên%20hệ%20với%20bạn..."><i class="fab fa-google"></i></a>
+    </div>
+      
+     
+ 
+
+  <script>
+  
+    new Typed("#typed", {
+      strings: ["Nguyễn Lê Anh Tuấn", "Information Security", "Web Developer"],
+      typeSpeed: 100,
+      backSpeed: 60,
+      loop: true,
+      backDelay: 1000,
+      startDelay: 500
+    });
+  </script>
+<audio id="bg-music" loop>
+  <source src="/Music/nhạc.mp3" type="audio/mpeg">
+</audio>
+
+<button id="music-btn" title="Bật / Tắt nhạc">
+  <i class="fas fa-volume-up"></i>
+</button>
+<script>
+  const music = document.getElementById("bg-music");
+  const musicBtn = document.getElementById("music-btn");
+  const icon = musicBtn.querySelector("i");
+  let isPlaying = false;
+  let hasInteracted = false;
+
+  // 🔹 Khi người dùng click vào trang lần đầu -> phát nhạc
+  document.addEventListener("click", () => {
+    if (!hasInteracted) {
+      music.play().catch(() => {});
+      icon.classList.replace("fa-volume-mute", "fa-volume-up");
+      isPlaying = true;
+      hasInteracted = true;
+    }
+  });
+
+  // 🔹 Khi bấm nút icon -> bật/tắt nhạc
+  musicBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // Không tính là click toàn trang
+    if (isPlaying) {
+      music.pause();
+      icon.classList.replace("fa-volume-up", "fa-volume-mute");
+    } else {
+      music.play();
+      icon.classList.replace("fa-volume-mute", "fa-volume-up");
+    }
+    isPlaying = !isPlaying;
+  });
+</script>
+
+</body>
+</html> 
