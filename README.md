@@ -6,7 +6,6 @@ This website showcases who I am, my skills, interests, and social links — all 
 ---
 
 ## 📸 Preview
-*(Optional – you can add a screenshot of your website)*  
 ![Website Preview](https://raw.githubusercontent.com/NguyenLeAnhTuan07/NguyenLeAnhTuan07.github.io/main/preview.png)
 
 ---
