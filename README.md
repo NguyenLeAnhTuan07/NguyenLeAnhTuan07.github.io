@@ -47,3 +47,6 @@ This website showcases who I am, my skills, interests, and social links — all 
 [![Gmail](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:tunbom056@gmail.com)
 
 ---
+
+## 📝 License
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
