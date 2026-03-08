@@ -314,9 +314,58 @@
     }
     #music-btn:hover { color: var(--accent); border-color: var(--border-glow); background: var(--accent-dim); }
 
+    /* ── MOBILE RESPONSIVE ── */
     @media (max-width: 480px) {
-      .card-shell { width: 100%; }
-      #slide-2 { max-height: 55vh; }
+      /* Layout */
+      body { align-items: flex-start; padding: 12px 0 80px; overflow-y: auto; height: auto; min-height: 100vh; cursor: auto; }
+      .card-shell { width: calc(100vw - 24px); margin: 0 auto; }
+
+      /* Hide crosshair on touch */
+      .cursor-h, .cursor-v, .cursor-dot { display: none; }
+
+      /* Header: smaller avatar & text */
+      .avatar-wrap { width: 64px; height: 64px; }
+      .avatar-wrap img { width: 64px; height: 64px; }
+      .card-name { font-size: 1.15em; }
+      .typed-line { font-size: 0.65em; }
+      .loc-line { font-size: 0.58em; }
+      .card-header { margin-bottom: 12px; }
+
+      /* Slides */
+      .slide { padding: 14px; }
+      .slide-viewport { min-height: 260px; }
+      #slide-2 { max-height: 52vh; }
+
+      /* About */
+      .about-text { font-size: 0.68em; line-height: 1.75; }
+      .tag { font-size: 0.58em; }
+
+      /* Skills: 4 col → 4 col but smaller */
+      .skills-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+      .skill-item { padding: 8px 2px; }
+      .skill-item img { width: 22px; height: 22px; }
+      .skill-item span { font-size: 0.50em; }
+
+      /* Projects */
+      .proj-name { font-size: 0.68em; }
+      .proj-desc { font-size: 0.58em; }
+      .proj-item { padding: 7px 5px; }
+
+      /* Nav */
+      .nav-row { margin-top: 10px; gap: 8px; }
+      .nav-arrow { width: 36px; height: 36px; font-size: 14px; cursor: auto; }
+      .dot { cursor: auto; }
+
+      /* Music btn */
+      #music-btn { cursor: auto; bottom: 14px; right: 14px; }
+
+      /* Hide pixel cat on mobile */
+      #pixel-cat { display: none; }
+
+      /* Splash */
+      .splash-body { padding: 32px 24px 30px; }
+      .splash-name { font-size: 1.5em; }
+      .splash-greeting { font-size: 0.65em; }
     }
 
     /* ── SPLASH ── */
