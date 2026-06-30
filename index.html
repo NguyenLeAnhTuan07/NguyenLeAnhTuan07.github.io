@@ -1,831 +1,609 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="/image/anhdaidien2.jpg" type="image/png">
+  <link rel="icon" id="dynamic-favicon" href="" type="image/png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nguyễn Lê Anh Tuấn</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&family=Fira+Code:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
   <style>
     :root {
       --accent: #e05572;
       --accent2: #c084a0;
       --accent-dim: rgba(220,70,95,0.15);
-      --border: rgba(220,70,95,0.18);
-      --border-glow: rgba(220,70,95,0.5);
-      --surface: rgba(160,30,50,0.10);
-      --surface-hover: rgba(180,40,60,0.18);
+      --border: rgba(220,70,95,0.3);
+      --border-glow: rgba(220,70,95,0.8);
+      --surface: rgba(30, 8, 14, 0.7);
+      --surface-hover: rgba(50, 15, 25, 0.85);
       --text: #f5e8ec;
-      --text-body: #d4b8c2;
       --muted: #9a7080;
-      --font-mono: 'IBM Plex Mono', monospace;
+      --font-body: 'Fira Code', monospace;
       --font-display: 'Be Vietnam Pro', sans-serif;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      height: 100vh;
-      overflow: hidden;
-      background: #0d0608;
-      color: var(--text);
-      font-family: var(--font-mono);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: none;
-    }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body { background: #0d0608; color: var(--text); font-family: var(--font-body); overflow-x: hidden; cursor: none; }
 
     /* ── CROSSHAIR CURSOR ── */
-    .cursor-h, .cursor-v {
-      position: fixed;
-      pointer-events: none;
-      z-index: 999999;
-      background: var(--accent);
-      opacity: 0.85;
-    }
+    .cursor-h, .cursor-v { position: fixed; pointer-events: none; z-index: 999999; background: var(--accent); opacity: 0.85; }
     .cursor-h { width: 18px; height: 1px; transform: translate(-50%, -50%); }
     .cursor-v { width: 1px; height: 18px; transform: translate(-50%, -50%); }
-    .cursor-dot {
-      position: fixed;
-      width: 3px; height: 3px;
-      background: #fff;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 999999;
-      transform: translate(-50%, -50%);
+    .cursor-dot { position: fixed; width: 3px; height: 3px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 999999; transform: translate(-50%, -50%); }
+
+    /* ── BACKGROUND ── */
+    video.background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; opacity: 0.55; }
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(10,4,6,0.72) 0%, rgba(20,5,10,0.65) 100%); z-index: -1; }
+
+    /* ── GLITCH EFFECT ── */
+    .glitch-hover { transition: all 0.2s ease; }
+    .glitch-hover:hover {
+      animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+      color: #fff; border-color: #fff;
+    }
+    @keyframes glitch-skew {
+      0% { transform: skew(0deg); text-shadow: none; }
+      20% { transform: skew(-10deg); text-shadow: -2px 0 var(--accent), 2px 0 #0ff; }
+      40% { transform: skew(10deg); text-shadow: 2px 0 var(--accent), -2px 0 #0ff; }
+      60% { transform: skew(-5deg); text-shadow: none; }
+      80% { transform: skew(5deg); text-shadow: 1px 0 var(--accent); }
+      100% { transform: skew(0deg); text-shadow: none; }
     }
 
-    /* ── PIXEL CAT ── */
-    #pixel-cat {
-      position: fixed;
-      z-index: 500;
-      width: 32px; height: 32px;
-      image-rendering: pixelated;
-      cursor: grab;
-      user-select: none;
-      filter: drop-shadow(0 2px 6px rgba(220,70,95,0.5));
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 999;
+      display: flex; justify-content: center; gap: 40px; padding: 20px;
+      background: rgba(13, 6, 8, 0.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); font-family: var(--font-display);
+      transition: padding 0.4s ease, backdrop-filter 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
     }
-    #pixel-cat:active { cursor: grabbing; }
+    nav.scrolled { padding: 10px 20px; backdrop-filter: blur(20px); background: rgba(13, 6, 8, 0.95); box-shadow: 0 4px 25px rgba(0,0,0,0.5); }
+    nav a {
+      position: relative; color: var(--text); text-decoration: none; font-size: 0.85em; letter-spacing: 0.15em;
+      text-transform: uppercase; transition: all 0.3s; cursor: none; font-weight: 600; padding-bottom: 4px;
+    }
+    nav a::after { content: ''; position: absolute; left: 0; bottom: 0; width: 0; height: 2px; background: var(--accent); transition: width 0.3s ease; box-shadow: 0 0 8px var(--accent); }
+    nav a:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent); transform: translateY(-2px); }
+    nav a:hover::after, nav a.active::after { width: 100%; }
+    nav a.active { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
 
-    /* Background */
-    video.background {
-      position: fixed; top:0; left:0;
-      width:100%; height:100%;
-      object-fit: cover; z-index: -2; opacity: 0.55;
-    }
-    .overlay {
-      position: fixed; top:0; left:0;
-      width:100%; height:100%;
-      background: linear-gradient(135deg, rgba(10,4,6,0.72) 0%, rgba(20,5,10,0.65) 100%);
-      z-index: -1;
-    }
-    .scanlines {
-      position: fixed; top:0; left:0;
-      width:100%; height:100%;
-      pointer-events: none; z-index: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
-    }
+    /* ── SECTIONS & REVEAL ── */
+    section { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100px 20px 40px; position: relative; z-index: 1; }
+    .reveal-wrapper { width: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0; transform: translateY(80px) scale(0.95); transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); filter: blur(5px); }
+    .reveal-wrapper.visible { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    .section-title { font-family: var(--font-display); font-size: 2.5em; font-weight: 800; color: #fff; margin-bottom: 50px; letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 10px; text-shadow: 0 0 15px var(--accent-dim); }
 
-    /* ── CARD SHELL ── */
-    .card-shell {
-      position: relative;
-      z-index: 1;
-      width: 420px;
-      max-width: calc(100vw - 32px);
-    }
+    /* ── HERO ── */
+    #hero { text-align: center; justify-content: center; }
+    .hero-typed-container { font-size: 1.5em; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; font-family: var(--font-display); min-height: 150px;}
+    .hero-name-style { font-size: 2.5em; font-weight: 800; color: #fff; letter-spacing: 0.05em; text-shadow: 0 0 20px rgba(255,255,255,0.2); text-transform: none; display: block; margin-top: 10px; }
+    .hero-sub-container { font-size: 1.2em; color: var(--muted); min-height: 30px; margin-top: 30px; opacity: 0; transition: opacity 1s; }
+    .hero-sub-container.show { opacity: 1; }
 
-    .card-header {
-      text-align: center;
-      margin-bottom: 18px;
-    }
-    .avatar-wrap {
-      position: relative;
-      width: 82px; height: 82px;
-      margin: 0 auto 12px;
-    }
-    .avatar-wrap::before {
-      content: '';
-      position: absolute; inset: -3px;
-      border-radius: 50%;
-      background: conic-gradient(#e05572, #9b3a55, #c084a0, #e05572);
-      animation: spin 4s linear infinite;
-      z-index: -1;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .avatar-wrap img {
-      width: 82px; height: 82px;
-      border-radius: 50%; object-fit: cover;
-      border: 3px solid #0d0608; display: block;
-    }
-    .online-dot {
-      position: absolute; bottom: 3px; right: 3px;
-      width: 11px; height: 11px;
-      background: #22c55e; border-radius: 50%;
-      border: 2px solid #0d0608;
-      box-shadow: 0 0 8px #22c55e;
-      animation: pdot 2s ease infinite;
-    }
-    @keyframes pdot {
-      0%,100% { box-shadow: 0 0 6px #22c55e; }
-      50% { box-shadow: 0 0 14px #22c55e, 0 0 22px rgba(34,197,94,0.4); }
-    }
-    .card-name {
-      font-family: var(--font-display);
-      font-size: 1.45em; font-weight: 800;
-      color: #fff; letter-spacing: -0.01em; margin-bottom: 4px;
-    }
-    .typed-line {
-      font-size: 0.7em; color: var(--accent);
-      letter-spacing: 0.04em; min-height: 18px;
-    }
-    .loc-line { font-size: 0.6em; color: var(--muted); margin-top: 5px; letter-spacing: 0.07em; }
-    .loc-line i { color: var(--accent); margin-right: 4px; }
+    /* ── ABOUT ME (TERMINAL UI) ── */
+    .about-container { display: grid; grid-template-columns: 1fr 1.2fr; gap: 50px; align-items: center; max-width: 1100px; padding: 20px; }
+    .about-img-wrapper { text-align: center; }
+    .about-img { width: 300px; height: 300px; border-radius: 15px; border: 2px solid var(--border-glow); object-fit: cover; box-shadow: 0 0 30px var(--accent-dim); transform: scale(0); opacity: 0; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .about-img.pop-in { transform: scale(1); opacity: 1; }
+    
+    /* Terminal Design */
+    .terminal-window { background: rgba(15, 6, 10, 0.85); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.6); backdrop-filter: blur(10px); }
+    .terminal-header { background: rgba(255, 255, 255, 0.05); padding: 12px 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); }
+    .term-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .term-red { background: #ff5f56; box-shadow: 0 0 5px #ff5f56; }
+    .term-yel { background: #ffbd2e; box-shadow: 0 0 5px #ffbd2e; }
+    .term-grn { background: #27c93f; box-shadow: 0 0 5px #27c93f; }
+    .terminal-title { flex: 1; text-align: center; color: var(--muted); font-size: 0.85em; font-family: var(--font-body); letter-spacing: 0.05em; margin-right: 60px; font-weight: 600;}
+    .terminal-body { padding: 30px; font-size: 0.95em; line-height: 1.8; color: var(--text); }
+    .terminal-body h3 { color: var(--accent); font-family: var(--font-display); font-size: 1.8em; margin-bottom: 20px; text-transform: uppercase; }
+    .about-typed-wrapper { min-height: 180px; } 
 
-    /* ── SLIDE VIEWPORT ── */
-    .slide-viewport {
-      position: relative;
-      overflow: hidden;
-      border-radius: 14px;
-      min-height: 300px;
-    }
+    /* ── PROJECTS (CAROUSEL) ── */
+    .proj-wrapper { width: 100%; max-width: 1000px; display: flex; flex-direction: column; align-items: center; }
+    .category-nav { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; }
+    .cat-btn { background: transparent; border: none; color: var(--muted); font-size: 2em; cursor: none; transition: color 0.3s; }
+    .cat-btn:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent); transform: scale(1.2); }
+    .category-title { font-family: var(--font-display); font-size: 1.5em; color: var(--accent2); margin: 10px 0; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;}
+    
+    .carousel-container { position: relative; width: 100%; height: 420px; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
+    .proj-card { position: absolute; width: 340px; height: 400px; background: rgba(20, 5, 10, 0.95); border: 1px solid var(--border); border-radius: 10px; padding: 30px 25px; display: flex; flex-direction: column; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .proj-card.hidden { opacity: 0; transform: scale(0.6) translateX(0); z-index: 0; pointer-events: none; }
+    .proj-card.prev { opacity: 0.4; filter: blur(5px); transform: scale(0.8) translateX(-150%); z-index: 1; pointer-events: none; }
+    .proj-card.next { opacity: 0.4; filter: blur(5px); transform: scale(0.8) translateX(150%); z-index: 1; pointer-events: none; }
+    .proj-card.active { opacity: 1; filter: blur(0); transform: scale(1) translateX(0); z-index: 5; border-color: var(--border-glow); box-shadow: 0 0 20px var(--accent-dim); }
 
-    .slide {
-      position: absolute;
-      top: 0; left: 0; width: 100%;
-      background: rgba(30, 8, 14, 0.72);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-      transition: transform 0.75s cubic-bezier(0.77,0,0.18,1);
-      will-change: transform;
-      /* Default: no scroll on slides */
-      overflow: hidden;
-    }
-    .slide.active { transform: translateX(0);    z-index: 2; }
-    .slide.prev   { transform: translateX(-130%); z-index: 1; }
-    .slide.next   { transform: translateX(130%);  z-index: 1; }
+    .proj-icon { font-size: 2.5em; color: var(--accent); margin-bottom: 15px; text-align: center; }
+    .proj-title { font-size: 1.1em; color: #fff; margin-bottom: 15px; font-family: var(--font-display); font-weight: 600; text-align: center; }
+    .proj-desc { color: var(--muted); font-size: 0.8em; line-height: 1.6; flex: 1; text-align: justify; }
+    .proj-link { display: inline-block; margin-top: 15px; color: var(--accent); text-decoration: none; border: 1px solid var(--accent); padding: 10px; border-radius: 5px; text-align: center; font-family: var(--font-display); font-size: 0.8em; text-transform: uppercase; font-weight: 600; cursor: none;}
+    
+    .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--accent); font-size: 3em; cursor: none; z-index: 10; transition: transform 0.2s, text-shadow 0.2s; }
+    .carousel-btn:hover { transform: translateY(-50%) scale(1.2); text-shadow: 0 0 15px var(--accent); }
+    #btn-left { left: 0px; } #btn-right { right: 0px; }
 
-    /* Projects slide — scrollable, fixed height */
-    #slide-2 {
-      overflow-y: auto;
-      max-height: 370px;
-    }
-    #slide-2::-webkit-scrollbar { width: 3px; }
-    #slide-2::-webkit-scrollbar-thumb { background: var(--border-glow); border-radius: 2px; }
+    /* ── PUBLICATIONS ── */
+    .pub-grid { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 900px; }
+    .pub-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 25px; display: flex; flex-direction: column; gap: 10px; transition: all 0.3s; position: relative; overflow: hidden; }
+    .pub-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--accent); transition: width 0.3s; z-index: 0; opacity: 0; }
+    .pub-card:hover { transform: translateX(10px); border-color: var(--border-glow); box-shadow: 0 0 20px var(--accent-dim); }
+    .pub-card:hover::before { opacity: 1; }
+    .pub-content { position: relative; z-index: 1; }
+    .pub-title { font-family: var(--font-display); font-size: 1.1em; color: #fff; margin-bottom: 5px; font-weight: 600;}
+    .pub-conf { font-size: 0.8em; color: var(--accent2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.4; }
+    .pub-desc { font-size: 0.85em; color: var(--muted); margin-top: 10px; }
+    .pub-links { margin-top: 15px; display: flex; gap: 15px; }
+    .pub-links a { color: var(--accent); text-decoration: none; font-size: 0.85em; display: flex; align-items: center; gap: 5px; cursor: none; }
 
-    /* Scroll hint indicator */
-    .scroll-hint {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.55em;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      margin-top: 10px;
-      opacity: 0.6;
-      animation: hint-fade 2s ease 1.5s forwards;
-    }
-    @keyframes hint-fade { to { opacity: 0; } }
+    /* ── CERTIFICATIONS ── */
+    .cert-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; width: 100%; max-width: 1000px; }
+    .cert-item { display: flex; align-items: center; gap: 20px; padding: 25px; border-radius: 10px; border: 1px solid var(--border); background: linear-gradient(135deg, rgba(30,8,14,0.8) 0%, rgba(10,2,5,0.9) 100%); transition: all 0.3s; text-decoration: none; position: relative; overflow: hidden; cursor: none; }
+    .cert-item::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(220,70,95,0.1) 0%, transparent 70%); opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+    .cert-item:hover { transform: translateY(-5px); border-color: var(--border-glow); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+    .cert-item:hover::after { opacity: 1; }
+    .cert-icon { font-size: 2.5em; color: var(--accent); background: rgba(220,70,95,0.1); padding: 15px; border-radius: 10px; border: 1px solid var(--border); }
+    .cert-info h3 { color: #fff; font-size: 1.1em; font-family: var(--font-display); margin-bottom: 8px; line-height: 1.4; font-weight: 600;}
+    .cert-info p { color: var(--muted); font-size: 0.85em; display: flex; align-items: center; gap: 5px; }
+    .cert-info p i { color: var(--accent2); }
 
-    /* Slide label */
-    .slide-label {
-      font-size: 0.58em; color: var(--accent);
-      letter-spacing: 0.14em; text-transform: uppercase;
-      margin-bottom: 14px;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .slide-label::before { content: '//'; color: var(--muted); }
+    /* ── CONTACT ── */
+    .contact-wrapper { text-align: center; }
+    .contact-desc { font-size: 1.1em; color: var(--muted); margin-bottom: 40px; }
+    .contact-grid { display: flex; justify-content: center; gap: 30px; }
+    .contact-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 2.2em; color: var(--muted); text-decoration: none; transform: scale(0); opacity: 0; cursor: none; transition: all 0.3s; }
+    .contact-icon.pop { animation: popUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    .contact-icon:hover { border-color: var(--accent); color: #fff; background: var(--accent); box-shadow: 0 0 25px var(--accent-dim); transform: scale(1.1) !important; }
+    @keyframes popUp { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-    /* About */
-    .about-text { font-size: 0.73em; line-height: 1.85; color: var(--text-body); font-weight: 300; }
-    .about-text strong { color: var(--text); font-weight: 600; }
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
-    .tag {
-      font-size: 0.6em; padding: 3px 10px; border-radius: 4px;
-      background: var(--accent-dim); border: 1px solid rgba(220,70,95,0.28);
-      color: var(--accent2); letter-spacing: 0.03em;
-    }
-
-    /* Skills */
-    .skills-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .skill-item {
-      display: flex; flex-direction: column; align-items: center; gap: 5px;
-      padding: 10px 4px; border-radius: 8px;
-      border: 1px solid var(--border); background: rgba(0,0,0,0.25);
-      transition: all 0.22s; cursor: default;
-    }
-    .skill-item:hover { border-color: var(--border-glow); background: var(--surface-hover); transform: translateY(-2px); }
-    .skill-item img { width: 26px; height: 26px; }
-    .skill-item span { font-size: 0.54em; color: var(--muted); letter-spacing: 0.04em; }
-
-    /* Projects */
-    .proj-cat {
-      font-size: 0.56em; color: var(--muted);
-      letter-spacing: 0.1em; text-transform: uppercase;
-      padding-bottom: 6px; border-bottom: 1px solid var(--border);
-      margin-bottom: 6px; margin-top: 14px;
-    }
-    .proj-cat:first-of-type { margin-top: 0; }
-    .proj-item {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 9px 8px; border-radius: 8px;
-      border: 1px solid transparent;
-      text-decoration: none; color: inherit;
-      transition: all 0.22s; margin-bottom: 3px;
-    }
-    .proj-item:hover { background: var(--surface-hover); border-color: rgba(220,70,95,0.22); }
-    .proj-num { font-size: 0.58em; color: var(--accent); min-width: 20px; padding-top: 2px; font-weight: 700; }
-    .proj-info { flex: 1; }
-    .proj-name { font-size: 0.72em; color: var(--text); font-weight: 600; margin-bottom: 2px; line-height: 1.3; }
-    .proj-desc { font-size: 0.61em; color: var(--muted); line-height: 1.5; font-weight: 300; }
-    .proj-arrow { font-size: 0.58em; color: var(--muted); padding-top: 3px; transition: color 0.2s, transform 0.2s; }
-    .proj-item:hover .proj-arrow { color: var(--accent); transform: translateX(3px); }
-
-    /* Cert */
-    .cert-item {
-      display: flex; align-items: center; gap: 12px;
-      text-decoration: none; color: inherit; padding: 10px;
-      border-radius: 10px; border: 1px solid var(--border);
-      background: rgba(0,0,0,0.2); transition: all 0.22s;
-    }
-    .cert-item:hover { background: var(--surface-hover); border-color: var(--border-glow); }
-    .cert-icon {
-      width: 38px; height: 38px; border-radius: 8px;
-      background: var(--accent-dim); border: 1px solid rgba(220,70,95,0.3);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 15px; color: var(--accent); flex-shrink: 0;
-    }
-    .cert-info { flex: 1; }
-    .cert-name { font-size: 0.7em; font-weight: 600; color: var(--text); line-height: 1.3; }
-    .cert-issuer { font-size: 0.59em; color: var(--muted); margin-top: 2px; }
-    .cert-badge {
-      font-size: 0.55em; color: #22c55e;
-      background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.28);
-      padding: 3px 9px; border-radius: 4px; white-space: nowrap;
-    }
-
-    /* Social */
-    .social-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .social-btn {
-      display: flex; flex-direction: column; align-items: center; gap: 5px;
-      padding: 12px 4px; border-radius: 8px;
-      border: 1px solid var(--border); background: rgba(0,0,0,0.25);
-      color: var(--muted); text-decoration: none;
-      font-size: 0.6em; letter-spacing: 0.04em; transition: all 0.22s;
-    }
-    .social-btn i { font-size: 17px; }
-    .social-btn:hover { color: var(--accent); border-color: var(--border-glow); background: var(--surface-hover); transform: translateY(-2px); }
-
-    /* Nav */
-    .nav-row {
-      display: flex; align-items: center; justify-content: center;
-      gap: 10px; margin-top: 14px;
-    }
-    .nav-arrow {
-      background: var(--surface); border: 1px solid var(--border);
-      color: var(--muted); width: 32px; height: 32px;
-      border-radius: 8px; font-size: 13px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: none; transition: all 0.2s; user-select: none;
-    }
-    .nav-arrow:hover { color: var(--accent); border-color: var(--border-glow); background: var(--accent-dim); }
-    .nav-arrow:disabled { opacity: 0.25; pointer-events: none; }
-    .dots { display: flex; gap: 6px; align-items: center; }
-    .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--muted); transition: all 0.3s; cursor: none;
-    }
-    .dot.active { background: var(--accent); width: 18px; border-radius: 3px; box-shadow: 0 0 8px var(--accent); }
-    .slide-counter { font-size: 0.58em; color: var(--muted); letter-spacing: 0.08em; min-width: 38px; text-align: center; }
-
-    /* Music btn */
-    #music-btn {
-      position: fixed; bottom: 20px; right: 20px;
-      background: rgba(30,8,14,0.7); border: 1px solid var(--border);
-      color: var(--muted); width: 38px; height: 38px;
-      border-radius: 10px; font-size: 14px; cursor: none; z-index: 999;
-      display: flex; align-items: center; justify-content: center; transition: all 0.25s;
-    }
-    #music-btn:hover { color: var(--accent); border-color: var(--border-glow); background: var(--accent-dim); }
-
-    /* ── MOBILE RESPONSIVE ── */
-    @media (max-width: 480px) {
-      /* Layout */
-      body { align-items: flex-start; padding: 12px 0 80px; overflow-y: auto; height: auto; min-height: 100vh; cursor: auto; }
-      .card-shell { width: calc(100vw - 24px); margin: 0 auto; }
-
-      /* Hide crosshair on touch */
-      .cursor-h, .cursor-v, .cursor-dot { display: none; }
-
-      /* Header: smaller avatar & text */
-      .avatar-wrap { width: 64px; height: 64px; }
-      .avatar-wrap img { width: 64px; height: 64px; }
-      .card-name { font-size: 1.15em; }
-      .typed-line { font-size: 0.65em; }
-      .loc-line { font-size: 0.58em; }
-      .card-header { margin-bottom: 12px; }
-
-      /* Slides */
-      .slide { padding: 14px; }
-      .slide-viewport { min-height: 260px; }
-      #slide-2 { max-height: 52vh; }
-
-      /* About */
-      .about-text { font-size: 0.68em; line-height: 1.75; }
-      .tag { font-size: 0.58em; }
-
-      /* Skills: 4 col → 4 col but smaller */
-      .skills-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
-      .skill-item { padding: 8px 2px; }
-      .skill-item img { width: 22px; height: 22px; }
-      .skill-item span { font-size: 0.50em; }
-
-      /* Projects */
-      .proj-name { font-size: 0.68em; }
-      .proj-desc { font-size: 0.58em; }
-      .proj-item { padding: 7px 5px; }
-
-      /* Nav */
-      .nav-row { margin-top: 10px; gap: 8px; }
-      .nav-arrow { width: 36px; height: 36px; font-size: 14px; cursor: auto; }
-      .dot { cursor: auto; }
-
-      /* Music btn */
-      #music-btn { cursor: auto; bottom: 14px; right: 14px; }
-
-      /* Hide pixel cat on mobile */
-      #pixel-cat { display: none; }
-
-      /* Splash */
-      .splash-body { padding: 32px 24px 30px; }
-      .splash-name { font-size: 1.5em; }
-      .splash-greeting { font-size: 0.65em; }
-    }
-
-    /* ── SPLASH ── */
-    #splash {
-      position: fixed; inset: 0; z-index: 99999;
-      display: flex; align-items: center; justify-content: center;
-      background: #0d0608;
-      transition: opacity 0.8s ease, visibility 0.8s ease;
-    }
-    #splash::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 50% 45%, rgba(200,70,100,0.22) 0%, transparent 65%);
-      pointer-events: none;
-    }
-    #splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-    #splash-canvas { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
-    .splash-window {
-      position: relative; z-index: 2;
-      width: 480px; max-width: calc(100vw - 40px);
-      background: rgba(28,8,14,0.92);
-      border: 1px solid rgba(220,100,130,0.3); border-radius: 12px;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 32px 80px rgba(0,0,0,0.7), 0 0 80px rgba(200,70,100,0.12);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      overflow: hidden;
-      animation: splashIn 0.7s 0.1s cubic-bezier(0.34,1.3,0.64,1) forwards;
-      opacity: 0; transform: scale(0.88) translateY(16px);
-    }
-    @keyframes splashIn { to { opacity: 1; transform: scale(1) translateY(0); } }
-    .splash-titlebar {
-      display: flex; align-items: center; gap: 8px;
-      padding: 12px 16px;
-      background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    .tb-dot { width: 12px; height: 12px; border-radius: 50%; }
-    .tb-dot.close { background: #ff5f57; box-shadow: 0 0 6px rgba(255,95,87,0.5); }
-    .tb-dot.min   { background: #ffbd2e; box-shadow: 0 0 6px rgba(255,189,46,0.5); }
-    .tb-dot.max   { background: #28c840; box-shadow: 0 0 6px rgba(40,200,64,0.5); }
-    .tb-title {
-      flex: 1; text-align: center;
-      font-family: var(--font-display); font-size: 0.72em;
-      color: rgba(255,255,255,0.3); letter-spacing: 0.06em; margin-right: 36px;
-    }
-    .splash-body { padding: 48px 40px 44px; text-align: center; }
-    .splash-greeting {
-      font-family: var(--font-display); font-size: 0.72em;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 16px; opacity: 0.8;
-    }
-    .splash-name {
-      font-family: var(--font-display); font-size: 1.9em; font-weight: 800;
-      color: #fff; line-height: 1.15; margin-bottom: 8px; letter-spacing: -0.02em;
-    }
-    .splash-sub {
-      font-size: 0.68em; color: rgba(200,160,175,0.7);
-      letter-spacing: 0.08em; margin-bottom: 44px; font-family: var(--font-mono);
-    }
-    .splash-divider {
-      width: 48px; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      margin: 0 auto 36px;
-    }
-    .splash-cta {
-      font-family: var(--font-mono); font-size: 0.65em;
-      color: rgba(255,255,255,0.35); letter-spacing: 0.12em; text-transform: uppercase;
-      animation: blink 1.8s ease infinite;
-    }
-    @keyframes blink { 0%,100% { opacity:0.35; } 50% { opacity:0.8; } }
-    .splash-cta i { margin-right: 6px; font-size: 0.9em; }
+    /* ── MUSIC BTN ── */
+    #music-btn { position: fixed; bottom: 30px; right: 30px; background: rgba(30,8,14,0.8); border: 1px solid var(--border); color: var(--muted); width: 50px; height: 50px; border-radius: 50%; font-size: 18px; cursor: none; z-index: 999; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    #music-btn:hover { color: var(--text); border-color: var(--accent); background: var(--accent); box-shadow: 0 0 20px var(--accent-dim); transform: scale(1.1); }
   </style>
 </head>
 <body>
 
-  <!-- SPLASH -->
-  <div id="splash">
-    <canvas id="splash-canvas"></canvas>
-    <div class="splash-window">
-      <div class="splash-titlebar">
-        <div class="tb-dot close"></div>
-        <div class="tb-dot min"></div>
-        <div class="tb-dot max"></div>
-        <span class="tb-title">portfolio.exe</span>
-      </div>
-      <div class="splash-body">
-        <div class="splash-greeting">Welcome to the portfolio of</div>
-        <div class="splash-name">Nguyễn Lê Anh Tuấn</div>
-        <div class="splash-sub">Information Security · Cryptography · AI</div>
-        <div class="splash-divider"></div>
-        <div class="splash-cta"><i class="fas fa-hand-pointer"></i>Click anywhere to continue</div>
-      </div>
-    </div>
-  </div>
+  <script>
+    // 📝 DỮ LIỆU CẤU HÌNH 📝
+    const CONFIG = {
+      resources: {
+        avatar: "/image/anhdaidien2.jpg",
+        favicon: "/image/anhdaidien2.jpg",
+        videoBg: "/assets/Video/videonen.mp4",
+        music: "/Music/nhạc.mp3"
+      },
+      profile: {
+        name: "Nguyễn Lê Anh Tuấn",
+        location: "Hanoi University of Civil Engineering (HUCE)",
+        typedSubTexts: [
+          "Information Security Student.", 
+          "Cryptography Researcher.", 
+          "AI Security Enthusiast.",
+          "Building systems from scratch."
+        ],
+        aboutText: "> Hello! I am an Information Security student with a strong passion for cryptography, secure system design, and AI technologies.<br>> Currently studying at HUCE.<br>> I love building systems from scratch to deeply understand their mathematical foundations and underlying architectures."
+      },
+      projectCategories: [
+        {
+          categoryName: "Cryptography & Security",
+          items: [
+            { title: "Data Encryption Standard", desc: "This project contains a simple DES implementation created for study purposes only. It is not intended for real-world security use.", icon: "fa-key", link: "https://github.com/NguyenLeAnhTuan07/des-for-learning" },
+            { title: "SHA Family From Scratch", desc: "This project contains manual implementations of several cryptographic hash functions.", icon: "fa-hashtag", link: "https://github.com/NguyenLeAnhTuan07/sha-family-from-scratch" },
+            { title: "Identity-Based EdDSA", desc: "Identity-Based EdDSA (IB-EdDSA) digital signature implementation for learning and study.", icon: "fa-signature", link: "https://github.com/NguyenLeAnhTuan07/ib-eddsa-signature" },
+            { title: "Tuan-Pwn-Rev-Archive", desc: "Archive of Pwnable and Reverse Engineering challenges and solutions.", icon: "fa-shield-alt", link: "https://github.com/NguyenLeAnhTuan07/Tuan-Pwn-Rev-Archive" }
+          ]
+        },
+        {
+          categoryName: "Machine Learning & AI",
+          items: [
+            { title: "VisionMouse", desc: "A zero-latency, multi-threaded AI gesture control system for OS navigation. Built with MediaPipe and Pynput.", icon: "fa-hand-paper", link: "https://github.com/NguyenLeAnhTuan07/VisionMouse" },
+            { title: "KNN-Cosine-Minkowski", desc: "A custom KNN implementation from scratch supporting Cosine & Minkowski metrics with Robust Scaling.", icon: "fa-project-diagram", link: "https://github.com/NguyenLeAnhTuan07/KNN-Cosine-Minkowski-Scratch" },
+            { title: "Logistic Regression", desc: "Educational implementation of Logistic Regression from scratch using Gradient Descent.", icon: "fa-brain", link: "https://github.com/NguyenLeAnhTuan07/logistic-regression-model" },
+            { title: "Linear Regression", desc: "A from-scratch implementation of Linear Regression in Python without using machine learning libraries.", icon: "fa-chart-line", link: "https://github.com/NguyenLeAnhTuan07/linear-regression-model" },
+            { title: "AI Data Collection System", desc: "A modular data acquisition infrastructure for AI training and data-driven systems.", icon: "fa-database", link: "https://github.com/NguyenLeAnhTuan07/ai-data-collection-system" }
+          ]
+        },
+        {
+          categoryName: "Applications & Tools",
+          items: [
+            { title: "LexFlow", desc: "LexFlow is a simple desktop application for learning English vocabulary efficiently.", icon: "fa-language", link: "https://github.com/NguyenLeAnhTuan07/LexFlow" },
+            { title: "Python OTP Demo", desc: "Educational implementation of HOTP and TOTP in Python with time-based rotation and verification logic.", icon: "fa-mobile-alt", link: "https://github.com/NguyenLeAnhTuan07/python-otp-demo" }
+          ]
+        }
+      ],
+      publications: [
+        {
+          title: "IoT Malware Detection Using a Layered Architecture and Machine Learning",
+          conference: "RET 2026 - Research in Engineering and Technology",
+          desc: "Proposed a layered architecture that decomposes classification into multiple stages, combining LightGBM and XGBoost with tier-specific feature engineering to improve detection of both dominant and minority classes.",
+          links: [ 
+            { text: "View PDF", url: "https://ret.tvu.edu.vn/static/media/paper2026/34.pdf", icon: "fa-file-pdf" }
+          ]
+        }
+      ],
+      certifications: [
+        { title: "Certified Cybersecurity Educator Professional", issuer: "Red Team Leaders", year: "2024", icon: "fa-shield-halved", link: "https://courses.redteamleaders.com/exam-completion/888c5ba3f8df323e" } 
+      ],
+      contacts: [
+        { icon: "fa-github", url: "https://github.com/NguyenLeAnhTuan07" },
+        { icon: "fa-facebook", url: "https://www.facebook.com/whoknowsnight" },
+        { icon: "fa-tiktok", url: "https://www.tiktok.com/@nguyenexlee" },
+        { icon: "fa-envelope", url: "mailto:tuan.nlaforwork@gmail.com" }
+      ]
+    };
+  </script>
 
   <div class="cursor-h" id="cur-h"></div>
   <div class="cursor-v" id="cur-v"></div>
   <div class="cursor-dot" id="cur-dot"></div>
-  <canvas id="pixel-cat" width="32" height="32"></canvas>
 
-  <video class="background" muted loop poster="backgroud.png">
-    <source src="/assets/Video/videonen.mp4" type="video/mp4">
-  </video>
+  <video class="background" id="bg-video" muted loop autoplay playsinline poster="backgroud.png"></video>
   <div class="overlay"></div>
-  <div class="scanlines"></div>
-
-  <div class="card-shell">
-    <div class="card-header">
-      <div class="avatar-wrap">
-        <img src="/image/anhdaidien2.jpg" alt="Nguyễn Lê Anh Tuấn">
-        <div class="online-dot"></div>
-      </div>
-      <div class="card-name">Nguyễn Lê Anh Tuấn</div>
-      <div class="typed-line"><span id="typed"></span></div>
-      <div class="loc-line"><i class="fas fa-map-marker-alt"></i>Hanoi, Vietnam · HUCE</div>
-    </div>
-
-    <div class="slide-viewport" id="viewport">
-
-      <!-- Slide 0: About -->
-      <div class="slide active" id="slide-0">
-        <div class="slide-label">whoami</div>
-        <div class="about-text">
-          Information Security student focused on <strong>cryptography</strong>, <strong>secure system design</strong>, and <strong>AI-driven technologies</strong>.<br><br>
-          I build systems from scratch to deeply understand mathematical foundations, protocols, and architectural decisions behind modern security and AI.
-        </div>
-        <div class="tags">
-          <span class="tag">Applied Cryptography</span>
-          <span class="tag">Secure Protocols</span>
-          <span class="tag">AI Security</span>
-          <span class="tag">Adversarial ML</span>
-        </div>
-      </div>
-
-      <!-- Slide 1: Skills -->
-      <div class="slide next" id="slide-1">
-        <div class="slide-label">tech_stack</div>
-        <div class="skills-grid">
-          <div class="skill-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"><span>Python</span></div>
-          <div class="skill-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg"><span>C++</span></div>
-          <div class="skill-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg"><span>C</span></div>
-          <div class="skill-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg"><span>HTML</span></div>
-          <div class="skill-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"><span>Git</span></div>
-          <div class="skill-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" style="filter:invert(0.8)"><span>GitHub</span></div>
-          <div class="skill-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg"><span>VSCode</span></div>
-          <div class="skill-item"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/latex/latex-original.svg"><span>LaTeX</span></div>
-        </div>
-      </div>
-
-      <!-- Slide 2: Projects (scrollable) -->
-      <div class="slide next" id="slide-2">
-        <div class="slide-label">projects <span style="font-size:0.8em;opacity:0.5;margin-left:4px;">↕ scroll</span></div>
-
-        <div class="proj-cat">// Cryptography &amp; Security</div>
-        <a class="proj-item" href="https://github.com/NguyenLeAnhTuan07/des-for-learning" target="_blank">
-          <span class="proj-num">01</span>
-          <div class="proj-info"><div class="proj-name">Data Encryption Standard</div><div class="proj-desc">Feistel structure, S-boxes, key schedule — from scratch</div></div>
-          <i class="fas fa-arrow-right proj-arrow"></i>
-        </a>
-        <a class="proj-item" href="https://github.com/NguyenLeAnhTuan07/sha-family-from-scratch" target="_blank">
-          <span class="proj-num">02</span>
-          <div class="proj-info"><div class="proj-name">SHA Family From Scratch</div><div class="proj-desc">SHA-1/SHA-2 — bitwise ops, compression rounds</div></div>
-          <i class="fas fa-arrow-right proj-arrow"></i>
-        </a>
-        <a class="proj-item" href="https://github.com/NguyenLeAnhTuan07/ib-eddsa-signature" target="_blank">
-          <span class="proj-num">03</span>
-          <div class="proj-info"><div class="proj-name">Ed-DSA Signature</div><div class="proj-desc">Identity-based EdDSA — elliptic curve from scratch</div></div>
-          <i class="fas fa-arrow-right proj-arrow"></i>
-        </a>
-        <a class="proj-item" href="https://github.com/NguyenLeAnhTuan07/python-otp-demo" target="_blank">
-          <span class="proj-num">04</span>
-          <div class="proj-info"><div class="proj-name">Python OTP Demo</div><div class="proj-desc">HOTP &amp; TOTP — RFC 4226 / RFC 6238 compliant</div></div>
-          <i class="fas fa-arrow-right proj-arrow"></i>
-        </a>
-
-        <div class="proj-cat">// AI &amp; Machine Learning</div>
-        <a class="proj-item" href="https://github.com/NguyenLeAnhTuan07/linear-regression-model" target="_blank">
-          <span class="proj-num">05</span>
-          <div class="proj-info"><div class="proj-name">Linear Regression Model</div><div class="proj-desc">Gradient descent from scratch — no ML libraries</div></div>
-          <i class="fas fa-arrow-right proj-arrow"></i>
-        </a>
-        <a class="proj-item" href="https://github.com/NguyenLeAnhTuan07/logistic-regression-model" target="_blank">
-          <span class="proj-num">06</span>
-          <div class="proj-info"><div class="proj-name">Logistic Regression Model</div><div class="proj-desc">Sigmoid, binary cross-entropy, backprop</div></div>
-          <i class="fas fa-arrow-right proj-arrow"></i>
-        </a>
-        <a class="proj-item" href="https://github.com/NguyenLeAnhTuan07/ai-data-collection-system" target="_blank">
-          <span class="proj-num">07</span>
-          <div class="proj-info"><div class="proj-name">AI Data Collection System</div><div class="proj-desc">Automated pipeline for image dataset acquisition</div></div>
-          <i class="fas fa-arrow-right proj-arrow"></i>
-        </a>
-
-        <div class="proj-cat">// Tools &amp; Applications</div>
-        <a class="proj-item" href="https://github.com/NguyenLeAnhTuan07/LexFlow" target="_blank">
-          <span class="proj-num">08</span>
-          <div class="proj-info"><div class="proj-name">LexFlow</div><div class="proj-desc">English vocab app — flashcards, A/B/C/D quizzes, word management</div></div>
-          <i class="fas fa-arrow-right proj-arrow"></i>
-        </a>
-        <a class="proj-item" href="https://nguyenleanhtuan07.github.io" target="_blank">
-          <span class="proj-num">09</span>
-          <div class="proj-info"><div class="proj-name">Portfolio Website</div><div class="proj-desc">Personal portfolio — technical overview &amp; project showcase</div></div>
-          <i class="fas fa-arrow-right proj-arrow"></i>
-        </a>
-      </div>
-
-      <!-- Slide 3: Cert -->
-      <div class="slide next" id="slide-3">
-        <div class="slide-label">certifications</div>
-        <a class="cert-item" href="https://courses.redteamleaders.com/exam-completion/888c5ba3f8df323e" target="_blank">
-          <div class="cert-icon"><i class="fas fa-shield-halved"></i></div>
-          <div class="cert-info">
-            <div class="cert-name">Certified Cybersecurity Educator Professional</div>
-            <div class="cert-issuer">Red Team Leaders · 2024</div>
-          </div>
-          <div class="cert-badge">✓ CCEP</div>
-        </a>
-      </div>
-
-      <!-- Slide 4: Contact -->
-      <div class="slide next" id="slide-4">
-        <div class="slide-label">contact</div>
-        <div class="social-grid">
-          <a class="social-btn" href="https://github.com/NguyenLeAnhTuan07" target="_blank"><i class="fab fa-github"></i>GitHub</a>
-          <a class="social-btn" href="https://www.facebook.com/whoknowsnight" target="_blank"><i class="fab fa-facebook"></i>Facebook</a>
-          <a class="social-btn" href="https://www.tiktok.com/@nguyenexlee" target="_blank"><i class="fab fa-tiktok"></i>TikTok</a>
-          <a class="social-btn" href="https://mail.google.com/mail/?view=cm&fs=1&to=tunbom056@gmail.com" target="_blank"><i class="fas fa-envelope"></i>Email</a>
-        </div>
-      </div>
-
-    </div><!-- end viewport -->
-
-    <div class="nav-row">
-      <button class="nav-arrow" id="btn-prev" onclick="navigate(-1)" disabled><i class="fas fa-chevron-left"></i></button>
-      <div class="dots" id="dots"></div>
-      <span class="slide-counter" id="counter">1 / 5</span>
-      <button class="nav-arrow" id="btn-next" onclick="navigate(1)"><i class="fas fa-chevron-right"></i></button>
-    </div>
-  </div>
-
-  <audio id="bg-music" loop><source src="/Music/nhạc.mp3" type="audio/mpeg"></audio>
+  <audio id="bg-music" loop></audio>
   <button id="music-btn" title="Toggle music"><i class="fas fa-volume-mute"></i></button>
 
+  <nav>
+    <a href="#hero">Home</a>
+    <a href="#about">About</a>
+    <a href="#publications">Publications</a>
+    <a href="#certifications">Certificates</a>
+    <a href="#projects">Projects</a>    
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <section id="hero">
+    <div class="reveal-wrapper" id="hero-reveal">
+      <div class="hero-typed-container">
+        <span id="hero-main-typed"></span>
+      </div>
+      <div class="hero-sub-container" id="hero-sub-container">
+        > <span id="hero-sub-typed"></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="reveal-wrapper" id="about-reveal">
+      <h2 class="section-title">About me</h2>
+      <div class="about-container">
+        <div class="about-img-wrapper">
+          <img src="" id="about-img" class="about-img" alt="Profile">
+        </div>
+        
+        <div class="terminal-window">
+          <div class="terminal-header">
+            <div class="term-dot term-red"></div>
+            <div class="term-dot term-yel"></div>
+            <div class="term-dot term-grn"></div>
+            <div class="terminal-title">tuan@whoknows:/identity</div>
+          </div>
+          <div class="terminal-body">
+            <h3>Whoami</h3>
+            <div class="about-typed-wrapper">
+              <span id="about-text-typed"></span>
+            </div>
+            <p style="margin-top: 15px; color: var(--accent2);">📍 <span id="about-location"></span></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="publications">
+    <div class="reveal-wrapper">
+      <h2 class="section-title">Publications</h2>
+      <div class="pub-grid" id="pub-container"></div>
+    </div>
+  </section>
+
+  <section id="certifications">
+    <div class="reveal-wrapper">
+      <h2 class="section-title">Certifications</h2>
+      <div class="cert-grid" id="cert-container"></div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="reveal-wrapper">
+      <h2 class="section-title">Projects</h2>
+      <div class="proj-wrapper">
+        <div class="category-nav">
+          <button class="cat-btn glitch-hover" id="cat-up"><i class="fas fa-caret-up"></i></button>
+          <div class="category-title" id="current-category">Category Name</div>
+          <button class="cat-btn glitch-hover" id="cat-down"><i class="fas fa-caret-down"></i></button>
+        </div>
+
+        <div class="carousel-container">
+          <button class="carousel-btn glitch-hover" id="btn-left"><i class="fas fa-chevron-left"></i></button>
+          <div id="carousel-cards-container" style="width: 100%; height: 100%; position: absolute; display: flex; justify-content: center; align-items: center;"></div>
+          <button class="carousel-btn glitch-hover" id="btn-right"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="reveal-wrapper" id="contact-reveal">
+      <h2 class="section-title">Contact</h2>
+      <div class="contact-wrapper">
+        <p class="contact-desc">My inbox is always open. Whether you have a question or just want to say hi, I'll try my best to get back to you!</p>
+        <div class="contact-grid" id="contact-container"></div>
+      </div>
+    </div>
+  </section>
+
   <script>
-    // ── Title typewriter ──
-    const titles = ["Nguyễn Lê Anh Tuấn","Who Knows?","NguyenexLee","Welcome 🌟"];
-    let ci=0,idx=0,del=false,cv=true;
-    function tw(){
-      const t=titles[ci]; let d=t.substring(0,Math.max(0,idx));
-      if(d==="")d="\u200B";
-      document.title=d+(cv?"|":" "); cv=!cv;
-      let s=del?80:150;
-      if(!del&&idx<t.length)idx++;
-      else if(del&&idx>0)idx--;
-      else if(!del){del=true;s=1000;}
-      else{del=false;ci=(ci+1)%titles.length;s=500;}
-      setTimeout(tw,s);
-    } tw();
+    // ── NẠP DỮ LIỆU TỪ CONFIG ──
+    document.getElementById('dynamic-favicon').href = CONFIG.resources.favicon;
+    document.getElementById('bg-video').src = CONFIG.resources.videoBg;
+    document.getElementById('bg-music').src = CONFIG.resources.music;
+    document.getElementById('about-img').src = CONFIG.resources.avatar;
+    document.getElementById('about-location').textContent = CONFIG.profile.location;
 
-    // ── Typed.js ──
-    new Typed("#typed",{
-      strings:["Information Security Student","Cryptography Researcher","AI × Security Explorer","Building from first principles"],
-      typeSpeed:70,backSpeed:40,loop:true,backDelay:1800,startDelay:400
+    // ── RENDER PUBLICATIONS ──
+    const pubContainer = document.getElementById('pub-container');
+    CONFIG.publications.forEach(pub => {
+      let linksHTML = pub.links.map(l => `<a href="${l.url}" class="glitch-hover" target="_blank"><i class="fas ${l.icon}"></i> ${l.text}</a>`).join('');
+      pubContainer.innerHTML += `
+        <div class="pub-card">
+          <div class="pub-content">
+            <div class="pub-title">${pub.title}</div>
+            <div class="pub-conf"><i class="fas fa-bookmark" style="margin-right:5px;"></i>${pub.conference}</div>
+            <div class="pub-desc">${pub.desc}</div>
+            <div class="pub-links">${linksHTML}</div>
+          </div>
+        </div>
+      `;
     });
 
-    // ── Crosshair Cursor ──
-    const curH=document.getElementById("cur-h"),
-          curV=document.getElementById("cur-v"),
-          curDot=document.getElementById("cur-dot");
-    let mx=0,my=0;
-    document.addEventListener("mousemove",e=>{
-      mx=e.clientX; my=e.clientY;
-      [curH,curV,curDot].forEach(el=>{ el.style.left=mx+"px"; el.style.top=my+"px"; });
+    // ── RENDER CERTIFICATIONS ──
+    const certContainer = document.getElementById('cert-container');
+    CONFIG.certifications.forEach(cert => {
+      certContainer.innerHTML += `
+        <a href="${cert.link}" class="cert-item" target="_blank">
+          <i class="fas ${cert.icon} cert-icon"></i>
+          <div class="cert-info">
+            <h3>${cert.title}</h3>
+            <p><i class="fas fa-building"></i> ${cert.issuer} • ${cert.year}</p>
+          </div>
+        </a>
+      `;
     });
 
-    // ── Pixel Cat ──
-    (function(){
-      const canvas=document.getElementById("pixel-cat");
-      const ctx=canvas.getContext("2d");
-      const W=window.innerWidth,H=window.innerHeight,SIZE=32;
-      const C={body:"#c0a080",dark:"#7a5c3a",eye:"#1a1a2e",nose:"#e07080",white:"#f5f0ea",ear:"#e08070",tail:"#c0a080"};
-      function drawCat(frame,facingRight){
-        ctx.clearRect(0,0,32,32); ctx.save();
-        if(!facingRight){ctx.translate(32,0);ctx.scale(-1,1);}
-        const p=(x,y,c)=>{ctx.fillStyle=c;ctx.fillRect(x*2,y*2,2,2);};
-        if(frame===2){
-          p(5,8,C.body);p(6,8,C.body);p(7,8,C.body);p(8,8,C.body);p(9,8,C.body);p(10,8,C.body);
-          p(4,9,C.body);p(5,9,C.body);p(6,9,C.body);p(7,9,C.body);p(8,9,C.body);p(9,9,C.body);p(10,9,C.body);p(11,9,C.body);
-          p(4,10,C.body);p(5,10,C.white);p(6,10,C.white);p(7,10,C.body);p(8,10,C.white);p(9,10,C.white);p(10,10,C.body);p(11,10,C.body);
-          p(4,11,C.body);p(5,11,C.body);p(6,11,C.body);p(7,11,C.body);p(8,11,C.body);p(9,11,C.body);p(10,11,C.body);p(11,11,C.body);
-          p(5,12,C.body);p(6,12,C.body);p(7,12,C.body);p(8,12,C.body);p(9,12,C.body);p(10,12,C.body);
-          p(5,3,C.body);p(6,3,C.body);p(7,3,C.body);p(8,3,C.body);p(9,3,C.body);
-          p(4,4,C.body);p(5,4,C.body);p(6,4,C.body);p(7,4,C.body);p(8,4,C.body);p(9,4,C.body);p(10,4,C.body);
-          p(4,5,C.body);p(5,5,C.eye);p(6,5,C.body);p(7,5,C.nose);p(8,5,C.body);p(9,5,C.eye);p(10,5,C.body);
-          p(4,6,C.body);p(5,6,C.body);p(6,6,C.body);p(7,6,C.body);p(8,6,C.body);p(9,6,C.body);p(10,6,C.body);
-          p(5,7,C.body);p(6,7,C.body);p(7,7,C.body);p(8,7,C.body);p(9,7,C.body);
-          p(4,2,C.ear);p(5,2,C.ear);p(9,2,C.ear);p(10,2,C.ear);p(4,3,C.ear);p(10,3,C.ear);
-          p(11,11,C.tail);p(12,10,C.tail);p(12,9,C.tail);p(11,8,C.tail);
-        } else {
-          const legOff=(frame===1||frame===4)?1:0,isRun=frame>=3,bodyY=isRun?7:8;
-          for(let x=4;x<=10;x++)p(x,bodyY,C.body);
-          for(let x=3;x<=11;x++)p(x,bodyY+1,C.body);
-          p(4,bodyY+2,C.body);p(5,bodyY+2,C.white);p(6,bodyY+2,C.white);
-          p(7,bodyY+2,C.body);p(8,bodyY+2,C.white);p(9,bodyY+2,C.white);p(10,bodyY+2,C.body);p(11,bodyY+2,C.body);
-          for(let x=4;x<=11;x++)p(x,bodyY+3,C.body);
-          const l1y=bodyY+4+legOff,l2y=bodyY+4+(1-legOff);
-          p(5,l1y,C.dark);p(6,l1y,C.dark);p(9,l2y,C.dark);p(10,l2y,C.dark);
-          p(5,l1y+1,C.dark);p(6,l1y+1,C.dark);p(9,l2y+1,C.dark);p(10,l2y+1,C.dark);
-          if(isRun){p(4,l1y,C.dark);p(11,l2y,C.dark);}
-          const hy=bodyY-5;
-          p(5,hy,C.body);p(6,hy,C.body);p(7,hy,C.body);p(8,hy,C.body);p(9,hy,C.body);
-          for(let x=4;x<=10;x++)p(x,hy+1,C.body);
-          p(4,hy+2,C.body);p(5,hy+2,C.eye);p(6,hy+2,C.body);p(7,hy+2,C.nose);p(8,hy+2,C.body);p(9,hy+2,C.eye);p(10,hy+2,C.body);
-          for(let x=4;x<=10;x++)p(x,hy+3,C.body);
-          p(5,hy+4,C.body);p(6,hy+4,C.body);p(7,hy+4,C.body);p(8,hy+4,C.body);p(9,hy+4,C.body);
-          p(4,hy-1,C.ear);p(5,hy-1,C.ear);p(9,hy-1,C.ear);p(10,hy-1,C.ear);p(4,hy,C.ear);p(10,hy,C.ear);
-          const ty=bodyY+1;
-          p(11,ty,C.tail);p(12,ty,C.tail);p(13,ty-1,C.tail);p(13,ty-2,C.tail);p(12,ty-3,C.tail);
-        }
-        ctx.restore();
-      }
-      let cat={x:80,y:80,vx:1.2,vy:0.7,frame:0,frameTick:0,sitting:false,sitTimer:0,dragging:false,dragOX:0,dragOY:0};
-      canvas.style.left=cat.x+"px"; canvas.style.top=cat.y+"px";
-      canvas.addEventListener("mousedown",e=>{cat.dragging=true;cat.dragOX=e.clientX-cat.x;cat.dragOY=e.clientY-cat.y;cat.sitting=false;cat.sitTimer=0;e.stopPropagation();});
-      document.addEventListener("mousemove",e=>{if(!cat.dragging)return;cat.x=e.clientX-cat.dragOX;cat.y=e.clientY-cat.dragOY;canvas.style.left=cat.x+"px";canvas.style.top=cat.y+"px";});
-      document.addEventListener("mouseup",e=>{if(!cat.dragging)return;cat.dragging=false;const angle=Math.random()*Math.PI*2,spd=1.2+Math.random()*1.5;cat.vx=Math.cos(angle)*spd;cat.vy=Math.sin(angle)*spd;});
-      function tick(){
-        if(!cat.dragging){
-          if(cat.sitting){cat.sitTimer--;if(cat.sitTimer<=0)cat.sitting=false;drawCat(2,cat.vx>=0);}
-          else{
-            cat.x+=cat.vx;cat.y+=cat.vy;
-            if(cat.x<0){cat.x=0;cat.vx=Math.abs(cat.vx);}
-            if(cat.x>W-SIZE){cat.x=W-SIZE;cat.vx=-Math.abs(cat.vx);}
-            if(cat.y<0){cat.y=0;cat.vy=Math.abs(cat.vy);}
-            if(cat.y>H-SIZE){cat.y=H-SIZE;cat.vy=-Math.abs(cat.vy);}
-            canvas.style.left=cat.x+"px";canvas.style.top=cat.y+"px";
-            cat.frameTick++;
-            const spd=Math.sqrt(cat.vx*cat.vx+cat.vy*cat.vy),fr=spd>2?5:8;
-            if(cat.frameTick>=fr){cat.frameTick=0;const frames=spd>2?[3,4]:[0,1];const idx2=frames.indexOf(cat.frame);cat.frame=frames[(idx2+1)%frames.length];if(cat.frame<0||cat.frame>4)cat.frame=frames[0];}
-            if(Math.random()<0.001){cat.sitting=true;cat.sitTimer=120+Math.floor(Math.random()*180);}
-            drawCat(cat.frame,cat.vx>=0);
+    // ── RENDER CONTACTS ──
+    const contactContainer = document.getElementById('contact-container');
+    CONFIG.contacts.forEach((contact, idx) => {
+      let delay = (idx + 1) * 0.15; 
+      contactContainer.innerHTML += `<a href="${contact.url}" class="contact-icon" target="_blank" style="animation-delay: ${delay}s"><i class="fab ${contact.icon}"></i></a>`;
+    });
+
+    // ── 2D PROJECT CAROUSEL LOGIC ──
+    let currentCatIdx = 0, currentProjIdx = 0;
+    const catTitleEl = document.getElementById('current-category');
+    const cardsContainer = document.getElementById('carousel-cards-container');
+
+    function renderProjectCards() {
+      const cat = CONFIG.projectCategories[currentCatIdx];
+      catTitleEl.textContent = `[ ${cat.categoryName} ]`;
+      cardsContainer.innerHTML = ''; 
+      cat.items.forEach((proj) => {
+        let card = document.createElement('div');
+        card.className = 'proj-card hidden';
+        card.innerHTML = `<i class="fas ${proj.icon} proj-icon"></i><div class="proj-title">${proj.title}</div><div class="proj-desc">${proj.desc}</div><a href="${proj.link}" class="proj-link glitch-hover" target="_blank">Access Data <i class="fas fa-arrow-right"></i></a>`;
+        cardsContainer.appendChild(card);
+      });
+      updateCarouselPositions();
+    }
+
+    function updateCarouselPositions() {
+      const cards = cardsContainer.querySelectorAll('.proj-card');
+      const total = cards.length;
+      if(total === 0) return;
+      cards.forEach((card, index) => {
+        card.className = 'proj-card hidden'; 
+        if (index === currentProjIdx) card.classList.replace('hidden', 'active');
+        else if (index === (currentProjIdx - 1 + total) % total) card.classList.replace('hidden', 'prev');
+        else if (index === (currentProjIdx + 1) % total) card.classList.replace('hidden', 'next');
+      });
+    }
+
+    document.getElementById('btn-right').addEventListener('click', () => { currentProjIdx = (currentProjIdx + 1) % CONFIG.projectCategories[currentCatIdx].items.length; updateCarouselPositions(); });
+    document.getElementById('btn-left').addEventListener('click', () => { currentProjIdx = (currentProjIdx - 1 + CONFIG.projectCategories[currentCatIdx].items.length) % CONFIG.projectCategories[currentCatIdx].items.length; updateCarouselPositions(); });
+
+    function changeCategory(direction) {
+      const totalCats = CONFIG.projectCategories.length;
+      currentCatIdx = (currentCatIdx + direction + totalCats) % totalCats;
+      currentProjIdx = 0; 
+      catTitleEl.style.opacity = 0; cardsContainer.style.opacity = 0;
+      setTimeout(() => { renderProjectCards(); catTitleEl.style.opacity = 1; cardsContainer.style.opacity = 1; }, 300);
+    }
+    document.getElementById('cat-up').addEventListener('click', () => changeCategory(-1));
+    document.getElementById('cat-down').addEventListener('click', () => changeCategory(1));
+    
+    cardsContainer.style.transition = 'opacity 0.3s';
+    catTitleEl.style.transition = 'opacity 0.3s';
+    renderProjectCards();
+
+    // ── SCROLL OBSERVER (SMART ANTIGRAVITY REVEAL) ──
+    let aboutTypedInstance = null;
+    let heroMainInstance = null;
+    let heroSubInstance = null;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+
+          if(entry.target.id === 'hero-reveal' && !heroMainInstance) {
+            heroMainInstance = new Typed('#hero-main-typed', {
+              strings: [`Welcome to the terminal of...^500<br><span class="hero-name-style">${CONFIG.profile.name}</span>`],
+              typeSpeed: 40, showCursor: true, cursorChar: '█',
+              onComplete: function() {
+                document.getElementById('hero-sub-container').classList.add('show');
+                if(!heroSubInstance) {
+                  heroSubInstance = new Typed('#hero-sub-typed', {
+                    strings: CONFIG.profile.typedSubTexts, typeSpeed: 50, backSpeed: 30, backDelay: 1500, loop: true, cursorChar: '█'
+                  });
+                }
+              }
+            });
           }
-        } else drawCat(2,true);
-        requestAnimationFrame(tick);
-      }
-      tick();
-    })();
 
-    // ── Slider ──
-    const TOTAL=5;
-    let current=0,animating=false;
-    const dotsEl=document.getElementById("dots");
-    const counterEl=document.getElementById("counter");
-    const btnPrev=document.getElementById("btn-prev");
-    const btnNext=document.getElementById("btn-next");
-    const projSlide=document.getElementById("slide-2");
+          if(entry.target.id === 'about-reveal') {
+            document.getElementById('about-img').classList.add('pop-in');
+            if(!aboutTypedInstance) {
+              aboutTypedInstance = new Typed('#about-text-typed', {
+                strings: [CONFIG.profile.aboutText],
+                typeSpeed: 10, showCursor: true, cursorChar: '█'
+              });
+            }
+          }
 
-    for(let i=0;i<TOTAL;i++){
-      const d=document.createElement("div");
-      d.className="dot"+(i===0?" active":"");
-      d.onclick=()=>goTo(i);
-      dotsEl.appendChild(d);
-    }
+          if (entry.target.id === 'contact-reveal') {
+            document.querySelectorAll('.contact-icon').forEach(icon => icon.classList.add('pop'));
+          }
 
-    function getSlide(i){return document.getElementById("slide-"+i);}
+        } else {
+          if (entry.boundingClientRect.top > 0) {
+            entry.target.classList.remove('visible');
+            
+            if(entry.target.id === 'about-reveal') {
+              document.getElementById('about-img').classList.remove('pop-in');
+              if(aboutTypedInstance) { aboutTypedInstance.destroy(); aboutTypedInstance = null; }
+            }
 
-    function goTo(next){
-      if(next===current||next<0||next>=TOTAL||animating)return;
-      animating=true;
-      const dir=next>current?1:-1;
-      const cur_slide=getSlide(current);
-      const next_slide=getSlide(next);
-
-      next_slide.style.transition="none";
-      next_slide.style.transform=dir>0?"translateX(130%)":"translateX(-130%)";
-      next_slide.style.zIndex="1";
-      cur_slide.style.zIndex="2";
-
-      requestAnimationFrame(()=>requestAnimationFrame(()=>{
-        const ease="transform 0.75s cubic-bezier(0.77,0,0.18,1)";
-        cur_slide.style.transition=ease;
-        next_slide.style.transition=ease;
-        cur_slide.style.transform=dir>0?"translateX(-130%)":"translateX(130%)";
-        next_slide.style.transform="translateX(0)";
-        setTimeout(()=>{
-          [cur_slide,next_slide].forEach(s=>{s.style.transition="";s.style.transform="";s.style.zIndex="";});
-          cur_slide.className="slide "+(dir>0?"prev":"next");
-          next_slide.className="slide active";
-          animating=false;
-        },780);
-      }));
-
-      dotsEl.children[current].classList.remove("active");
-      dotsEl.children[next].classList.add("active");
-      counterEl.textContent=(next+1)+" / "+TOTAL;
-      btnPrev.disabled=next===0;
-      btnNext.disabled=next===TOTAL-1;
-      current=next;
-    }
-
-    function navigate(dir){goTo(current+dir);}
-
-    document.addEventListener("keydown",e=>{
-      if(e.key==="ArrowRight"||e.key==="ArrowDown") navigate(1);
-      if(e.key==="ArrowLeft"||e.key==="ArrowUp") navigate(-1);
-    });
-
-    // Touch/swipe
-    let tx=0;
-    document.getElementById("viewport").addEventListener("touchstart",e=>{tx=e.touches[0].clientX;});
-    document.getElementById("viewport").addEventListener("touchend",e=>{
-      const dx=tx-e.changedTouches[0].clientX;
-      if(Math.abs(dx)>40)navigate(dx>0?1:-1);
-    });
-
-    // ── Mouse wheel: scroll projects OR navigate slides ──
-    let wheelLock=false;
-    document.addEventListener("wheel",e=>{
-      // If cursor is hovering over the projects slide AND it's active → scroll inside
-      if(current===2){
-        const rect=projSlide.getBoundingClientRect();
-        const overProj=mx>=rect.left&&mx<=rect.right&&my>=rect.top&&my<=rect.bottom;
-        if(overProj){
-          // Scroll the projects slide manually
-          projSlide.scrollTop += e.deltaY;
-          return;
+            if (entry.target.id === 'contact-reveal') {
+              document.querySelectorAll('.contact-icon').forEach(icon => icon.classList.remove('pop'));
+            }
+          }
         }
-      }
-      // Otherwise navigate slides
-      if(wheelLock)return;
-      if(Math.abs(e.deltaY)<10)return;
-      navigate(e.deltaY>0?1:-1);
-      wheelLock=true;
-      setTimeout(()=>wheelLock=false,600);
-    },{passive:true});
+      });
+    }, { threshold: 0.15 });
 
-    // ── Splash ──
-    (function(){
-      const splash=document.getElementById("splash");
-      const video=document.querySelector("video.background");
-      const music=document.getElementById("bg-music");
-      const mbtn=document.getElementById("music-btn");
-      const micon=mbtn.querySelector("i");
-      let playing=false;
-      const sc=document.getElementById("splash-canvas");
-      sc.width=window.innerWidth;sc.height=window.innerHeight;
-      const sctx=sc.getContext("2d");
-      const particles=Array.from({length:55},()=>({x:Math.random()*sc.width,y:Math.random()*sc.height,r:0.5+Math.random()*1.5,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,a:0.1+Math.random()*0.4}));
-      function drawP(){
-        sctx.clearRect(0,0,sc.width,sc.height);
-        particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=sc.width;if(p.x>sc.width)p.x=0;if(p.y<0)p.y=sc.height;if(p.y>sc.height)p.y=0;sctx.beginPath();sctx.arc(p.x,p.y,p.r,0,Math.PI*2);sctx.fillStyle=`rgba(220,100,130,${p.a})`;sctx.fill();});
-        if(!splash.classList.contains("hidden"))requestAnimationFrame(drawP);
+    document.querySelectorAll('.reveal-wrapper').forEach(el => observer.observe(el));
+
+    // ── SCROLL-SHRINK NAV + ACTIVE SECTION INDICATOR ──
+    const navEl = document.querySelector('nav');
+    const navLinks = document.querySelectorAll('nav a');
+    const allSections = document.querySelectorAll('section[id]');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) { navEl.classList.add('scrolled'); } 
+      else { navEl.classList.remove('scrolled'); }
+    });
+
+    const navObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+          });
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+
+    allSections.forEach(sec => navObserver.observe(sec));
+
+    // ── AUDIO & CUSTOM CURSOR LOGIC ──
+    const music = document.getElementById("bg-music");
+    const mbtn = document.getElementById("music-btn");
+    const micon = mbtn.querySelector("i");
+    let playing = false;
+    mbtn.addEventListener("click", () => {
+      if(playing) { music.pause(); micon.className="fas fa-volume-mute"; }
+      else { music.play(); micon.className="fas fa-volume-up"; }
+      playing = !playing;
+    });
+
+    const curH=document.getElementById("cur-h"), curV=document.getElementById("cur-v"), curDot=document.getElementById("cur-dot");
+    document.addEventListener("mousemove", e => { [curH, curV, curDot].forEach(el => { el.style.left = e.clientX + "px"; el.style.top = e.clientY + "px"; }); });
+
+    // ── ONEKO CAT SCRIPT ──
+    (function() {
+      const nekoEl = document.createElement("div");
+      let nekoPosX = 32, nekoPosY = 32, mousePosX = 0, mousePosY = 0;
+      let frameCount = 0, idleTime = 0, idleAnimation = null, idleAnimationFrame = 0;
+      const nekoSpeed = 10;
+      const spriteSets = {
+        idle: [[-3, -3]], alert: [[-7, -3]],
+        scratchSelf: [[-5, 0], [-6, 0], [-7, 0]],
+        scratchWallN: [[0, 0], [-1, 0]], scratchWallS: [[-7, -1], [-6, -2]],
+        scratchWallE: [[-2, -2], [-2, -3]], scratchWallW: [[-4, 0], [-4, -1]],
+        tired: [[-3, -2]], sleeping: [[-2, 0], [-2, -1]],
+        N: [[-1, -2], [-1, -3]], NE: [[0, -2], [0, -3]],
+        E: [[-3, 0], [-3, -1]], SE: [[-5, -1], [-5, -2]],
+        S: [[-6, -3], [-7, -2]], SW: [[-5, -3], [-6, -1]],
+        W: [[-4, -2], [-4, -3]], NW: [[-1, 0], [-1, -1]],
+      };
+
+      nekoEl.id = "oneko";
+      nekoEl.style.width = "32px";
+      nekoEl.style.height = "32px";
+      nekoEl.style.position = "fixed";
+      nekoEl.style.pointerEvents = "none";
+      // Sử dụng ảnh sprite con mèo Oneko từ Github
+      nekoEl.style.backgroundImage = "url('https://raw.githubusercontent.com/adryd325/oneko.js/main/oneko.gif')";
+      nekoEl.style.imageRendering = "pixelated";
+      nekoEl.style.zIndex = 500;
+      nekoEl.style.filter = "drop-shadow(0px 2px 6px rgba(220,70,95,0.6))";
+      document.body.appendChild(nekoEl);
+
+      function setSprite(name, frame) {
+        const sprite = spriteSets[name][frame % spriteSets[name].length];
+        nekoEl.style.backgroundPosition = `${sprite[0] * 32}px ${sprite[1] * 32}px`;
       }
-      drawP();
-      splash.addEventListener("click",()=>{
-        splash.classList.add("hidden");
-        video.play().catch(()=>{});
-        music.play().then(()=>{micon.className="fas fa-volume-up";playing=true;}).catch(()=>{});
-      });
-      mbtn.addEventListener("click",e=>{
-        e.stopPropagation();
-        playing?(music.pause(),micon.className="fas fa-volume-mute"):(music.play(),micon.className="fas fa-volume-up");
-        playing=!playing;
-      });
+
+      function resetIdleAnimation() { idleAnimation = null; idleAnimationFrame = 0; }
+
+      function idle() {
+        idleTime += 1;
+        if (idleTime > 10 && Math.floor(Math.random() * 200) === 0 && idleAnimation == null) {
+          let avalibleIdleAnimations = ["sleeping", "scratchSelf"];
+          if (nekoPosX < 32) avalibleIdleAnimations.push("scratchWallW");
+          if (nekoPosY < 32) avalibleIdleAnimations.push("scratchWallN");
+          if (nekoPosX > window.innerWidth - 32) avalibleIdleAnimations.push("scratchWallE");
+          if (nekoPosY > window.innerHeight - 32) avalibleIdleAnimations.push("scratchWallS");
+          idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
+        }
+        switch (idleAnimation) {
+          case "sleeping": if (idleAnimationFrame < 8) { setSprite("tired", 0); break; } setSprite("sleeping", Math.floor(idleAnimationFrame / 4)); if (idleAnimationFrame > 192) { resetIdleAnimation(); } break;
+          case "scratchWallN": case "scratchWallS": case "scratchWallE": case "scratchWallW": case "scratchSelf": setSprite(idleAnimation, idleAnimationFrame); if (idleAnimationFrame > 9) { resetIdleAnimation(); } break;
+          default: setSprite("idle", 0); return;
+        }
+        idleAnimationFrame += 1;
+      }
+
+      function frame() {
+        frameCount += 1;
+        const diffX = nekoPosX - mousePosX;
+        const diffY = nekoPosY - mousePosY;
+        const distance = Math.sqrt(diffX ** 2 + diffY ** 2);
+
+        if (distance < nekoSpeed || distance < 48) { idle(); return; }
+
+        idleAnimation = null; idleAnimationFrame = 0;
+        if (idleTime > 1) { setSprite("alert", 0); idleTime = Math.min(idleTime, 7); idleTime -= 1; return; }
+
+        let direction = "";
+        direction += diffY / distance > 0.5 ? "N" : ""; direction += diffY / distance < -0.5 ? "S" : "";
+        direction += diffX / distance > 0.5 ? "W" : ""; direction += diffX / distance < -0.5 ? "E" : "";
+        setSprite(direction, frameCount);
+
+        nekoPosX -= (diffX / distance) * nekoSpeed;
+        nekoPosY -= (diffY / distance) * nekoSpeed;
+        nekoEl.style.left = `${nekoPosX - 16}px`;
+        nekoEl.style.top = `${nekoPosY - 16}px`;
+      }
+
+      document.addEventListener("mousemove", e => { mousePosX = e.clientX; mousePosY = e.clientY; });
+      window.setInterval(frame, 100);
     })();
   </script>
 </body>
