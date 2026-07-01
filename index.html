@@ -4,7 +4,7 @@
   <link rel="icon" id="dynamic-favicon" href="" type="image/png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio | Security & AI</title>
+  <title>Who Knows ?</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&family=Fira+Code:wght@300;400;600&display=swap" rel="stylesheet">
@@ -111,6 +111,20 @@
     .terminal-body h3 { color: var(--accent); font-family: var(--font-display); font-size: 1.8em; margin-bottom: 20px; text-transform: uppercase; }
     .about-typed-wrapper { min-height: 180px; } 
 
+    /* ── TECH STACK MATRIX ── */
+    .skills-matrix { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 25px; }
+    .skill-badge { 
+      padding: 8px 16px; background: rgba(220,70,95,0.05); 
+      border: 1px solid var(--border); border-radius: 8px; 
+      font-family: var(--font-body); font-size: 0.85em; color: var(--accent2); 
+      display: flex; align-items: center; gap: 8px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: none;
+    }
+    .skill-badge:hover { 
+      background: var(--accent-dim); color: #fff; border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(220,70,95,0.4); transform: translateY(-4px) scale(1.05); 
+    }
+    .skill-badge i { color: var(--accent); }
+
     /* ── PROJECTS (CAROUSEL) ── */
     .proj-wrapper { width: 100%; max-width: 1000px; display: flex; flex-direction: column; align-items: center; }
     .category-nav { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; }
@@ -173,47 +187,32 @@
 
     /* ── MOBILE OPTIMIZATION ── */
     @media (max-width: 768px) {
-      /* Reset Cursors & Hide elements not suitable for touch */
       body, a, button, .proj-link, .cert-item, .contact-icon { cursor: auto !important; }
       .cursor-h, .cursor-v, .cursor-dot, #oneko { display: none !important; }
-      
-      /* Navbar */
       nav { gap: 10px; padding: 15px 10px; flex-wrap: wrap; }
       nav a { font-size: 0.75em; letter-spacing: 0.05em; }
       nav.scrolled { padding: 10px; }
-      
-      /* General Sections */
       section { padding: 80px 15px 30px; min-height: auto; }
       .section-title { font-size: 1.8em; margin-bottom: 30px; }
-
-      /* Hero Section */
       .hero-name-style { font-size: 1.8em; }
       .hero-typed-container { font-size: 1em; min-height: 100px; }
-
-      /* About Section */
       .about-container { grid-template-columns: 1fr; gap: 30px; padding: 20px; }
       .about-img { width: 220px; height: 220px; }
       .terminal-header { padding: 10px; }
       .terminal-title { font-size: 0.7em; margin-right: 0; }
       .terminal-body { padding: 20px; font-size: 0.85em; }
       .about-typed-wrapper { min-height: 140px; }
-
-      /* Projects Carousel */
       .carousel-container { height: 450px; }
       .proj-card { width: 280px; height: 400px; padding: 20px; }
       .proj-card.prev { transform: scale(0.8) translateX(-110%); opacity: 0; pointer-events: none; }
       .proj-card.next { transform: scale(0.8) translateX(110%); opacity: 0; pointer-events: none; }
       .carousel-btn { font-size: 2.5em; }
-      
-      /* Certifications & Publications */
       .cert-grid { grid-template-columns: 1fr; gap: 20px; }
       .cert-item { padding: 15px; flex-direction: column; text-align: center; }
       .cert-info p { justify-content: center; }
       .pub-card { padding: 15px; }
       .pub-title { font-size: 1em; }
       .pub-links { flex-direction: column; gap: 10px; }
-
-      /* Contact */
       .contact-grid { gap: 15px; flex-wrap: wrap; }
       .contact-icon { width: 60px; height: 60px; font-size: 1.8em; }
     }
@@ -241,6 +240,15 @@
         ],
         aboutText: "> Hello! I am an Information Security student with a strong passion for cryptography, secure system design, and AI technologies.<br>> Currently studying at HUCE.<br>> I love building systems from scratch to deeply understand their mathematical foundations and underlying architectures."
       },
+      skills: [
+        { name: "Pwn", icon: "fas fa-skull-crossbones" }, // Icon đầu lâu xương chéo đậm chất khai thác lỗ hổng
+        { name: "C / C++", icon: "fas fa-code" }, // Icon mã code kinh điển
+        { name: "LaTeX", icon: "fas fa-file-signature" }, // Icon văn bản học thuật
+        { name: "Assembly", icon: "fas fa-microchip" }, // Icon vi mạch phần cứng
+        { name: "Python AI", icon: "fab fa-python" }, // Icon logo Python chuẩn
+        { name: "xAI", icon: "fas fa-brain" } // Icon bộ não tượng trưng cho Explainable AI
+      
+      ],
       projectCategories: [
         {
           categoryName: "Cryptography & Security",
@@ -340,7 +348,10 @@
             <div class="about-typed-wrapper">
               <span id="about-text-typed"></span>
             </div>
-            <p style="margin-top: 15px; color: var(--accent2);">📍 <span id="about-location"></span></p>
+            
+            <div class="skills-matrix" id="skills-matrix-container"></div>
+
+            <p style="margin-top: 25px; color: var(--accent2);">📍 <span id="about-location"></span></p>
           </div>
         </div>
 
@@ -398,6 +409,12 @@
     document.getElementById('bg-music').src = CONFIG.resources.music;
     document.getElementById('about-img').src = CONFIG.resources.avatar;
     document.getElementById('about-location').textContent = CONFIG.profile.location;
+
+    // ── RENDER SKILLS ──
+    const skillsContainer = document.getElementById('skills-matrix-container');
+    CONFIG.skills.forEach(skill => {
+      skillsContainer.innerHTML += `<div class="skill-badge"><i class="${skill.icon}"></i> ${skill.name}</div>`;
+    });
 
     // ── RENDER PUBLICATIONS ──
     const pubContainer = document.getElementById('pub-container');
@@ -601,7 +618,6 @@
       nekoEl.style.height = "32px";
       nekoEl.style.position = "fixed";
       nekoEl.style.pointerEvents = "none";
-      // Sử dụng ảnh sprite con mèo Oneko từ Github
       nekoEl.style.backgroundImage = "url('https://raw.githubusercontent.com/adryd325/oneko.js/main/oneko.gif')";
       nekoEl.style.imageRendering = "pixelated";
       nekoEl.style.zIndex = 500;
