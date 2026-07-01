@@ -4,7 +4,7 @@
   <link rel="icon" id="dynamic-favicon" href="" type="image/png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nguyễn Lê Anh Tuấn</title>
+  <title>Portfolio | Security & AI</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&family=Fira+Code:wght@300;400;600&display=swap" rel="stylesheet">
@@ -30,6 +30,12 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; overflow-x: hidden; }
     body { background: #0d0608; color: var(--text); font-family: var(--font-body); overflow-x: hidden; cursor: none; }
+
+    /* ── CUSTOM SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0d0608; }
+    ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
     /* ── CROSSHAIR CURSOR ── */
     .cursor-h, .cursor-v { position: fixed; pointer-events: none; z-index: 999999; background: var(--accent); opacity: 0.85; }
@@ -164,6 +170,53 @@
     /* ── MUSIC BTN ── */
     #music-btn { position: fixed; bottom: 30px; right: 30px; background: rgba(30,8,14,0.8); border: 1px solid var(--border); color: var(--muted); width: 50px; height: 50px; border-radius: 50%; font-size: 18px; cursor: none; z-index: 999; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
     #music-btn:hover { color: var(--text); border-color: var(--accent); background: var(--accent); box-shadow: 0 0 20px var(--accent-dim); transform: scale(1.1); }
+
+    /* ── MOBILE OPTIMIZATION ── */
+    @media (max-width: 768px) {
+      /* Reset Cursors & Hide elements not suitable for touch */
+      body, a, button, .proj-link, .cert-item, .contact-icon { cursor: auto !important; }
+      .cursor-h, .cursor-v, .cursor-dot, #oneko { display: none !important; }
+      
+      /* Navbar */
+      nav { gap: 10px; padding: 15px 10px; flex-wrap: wrap; }
+      nav a { font-size: 0.75em; letter-spacing: 0.05em; }
+      nav.scrolled { padding: 10px; }
+      
+      /* General Sections */
+      section { padding: 80px 15px 30px; min-height: auto; }
+      .section-title { font-size: 1.8em; margin-bottom: 30px; }
+
+      /* Hero Section */
+      .hero-name-style { font-size: 1.8em; }
+      .hero-typed-container { font-size: 1em; min-height: 100px; }
+
+      /* About Section */
+      .about-container { grid-template-columns: 1fr; gap: 30px; padding: 20px; }
+      .about-img { width: 220px; height: 220px; }
+      .terminal-header { padding: 10px; }
+      .terminal-title { font-size: 0.7em; margin-right: 0; }
+      .terminal-body { padding: 20px; font-size: 0.85em; }
+      .about-typed-wrapper { min-height: 140px; }
+
+      /* Projects Carousel */
+      .carousel-container { height: 450px; }
+      .proj-card { width: 280px; height: 400px; padding: 20px; }
+      .proj-card.prev { transform: scale(0.8) translateX(-110%); opacity: 0; pointer-events: none; }
+      .proj-card.next { transform: scale(0.8) translateX(110%); opacity: 0; pointer-events: none; }
+      .carousel-btn { font-size: 2.5em; }
+      
+      /* Certifications & Publications */
+      .cert-grid { grid-template-columns: 1fr; gap: 20px; }
+      .cert-item { padding: 15px; flex-direction: column; text-align: center; }
+      .cert-info p { justify-content: center; }
+      .pub-card { padding: 15px; }
+      .pub-title { font-size: 1em; }
+      .pub-links { flex-direction: column; gap: 10px; }
+
+      /* Contact */
+      .contact-grid { gap: 15px; flex-wrap: wrap; }
+      .contact-icon { width: 60px; height: 60px; font-size: 1.8em; }
+    }
   </style>
 </head>
 <body>
@@ -219,7 +272,7 @@
       publications: [
         {
           title: "IoT Malware Detection Using a Layered Architecture and Machine Learning",
-          conference: "RET 2026 - Research in Engineering and Technology",
+          conference: "Published Paper (2026)",
           desc: "Proposed a layered architecture that decomposes classification into multiple stages, combining LightGBM and XGBoost with tier-specific feature engineering to improve detection of both dominant and minority classes.",
           links: [ 
             { text: "View PDF", url: "https://ret.tvu.edu.vn/static/media/paper2026/34.pdf", icon: "fa-file-pdf" }
