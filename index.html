@@ -37,11 +37,15 @@
     ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
-    /* ── CROSSHAIR CURSOR ── */
-    .cursor-h, .cursor-v { position: fixed; pointer-events: none; z-index: 999999; background: var(--accent); opacity: 0.85; }
-    .cursor-h { width: 18px; height: 1px; transform: translate(-50%, -50%); }
-    .cursor-v { width: 1px; height: 18px; transform: translate(-50%, -50%); }
-    .cursor-dot { position: fixed; width: 3px; height: 3px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 999999; transform: translate(-50%, -50%); }
+    /* ── CROSSHAIR CURSOR (GPU OPTIMIZED) ── */
+    .cursor-h, .cursor-v { position: fixed; pointer-events: none; z-index: 999999; background: var(--accent); opacity: 0.85; left: 0; top: 0; will-change: transform; }
+    .cursor-h { width: 18px; height: 1px; }
+    .cursor-v { width: 1px; height: 18px; }
+    .cursor-dot { position: fixed; width: 3px; height: 3px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 999999; left: 0; top: 0; will-change: transform; }
+
+    /* ── PIXEL CAT ── */
+    #pixel-cat { position: fixed; z-index: 500; width: 32px; height: 32px; image-rendering: pixelated; cursor: grab; user-select: none; filter: drop-shadow(0 2px 6px rgba(220,70,95,0.5)); }
+    #pixel-cat:active { cursor: grabbing; }
 
     /* ── BACKGROUND ── */
     video.background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; opacity: 0.55; }
@@ -66,11 +70,11 @@
     nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 999;
       display: flex; justify-content: center; gap: 40px; padding: 20px;
-      background: rgba(13, 6, 8, 0.85); backdrop-filter: blur(12px);
+      background: rgba(13, 6, 8, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border); font-family: var(--font-display);
       transition: padding 0.4s ease, backdrop-filter 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
     }
-    nav.scrolled { padding: 10px 20px; backdrop-filter: blur(20px); background: rgba(13, 6, 8, 0.95); box-shadow: 0 4px 25px rgba(0,0,0,0.5); }
+    nav.scrolled { padding: 10px 20px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(13, 6, 8, 0.95); box-shadow: 0 4px 25px rgba(0,0,0,0.5); }
     nav a {
       position: relative; color: var(--text); text-decoration: none; font-size: 0.85em; letter-spacing: 0.15em;
       text-transform: uppercase; transition: all 0.3s; cursor: none; font-weight: 600; padding-bottom: 4px;
@@ -100,7 +104,7 @@
     .about-img.pop-in { transform: scale(1); opacity: 1; }
     
     /* Terminal Design */
-    .terminal-window { background: rgba(15, 6, 10, 0.85); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.6); backdrop-filter: blur(10px); }
+    .terminal-window { background: rgba(15, 6, 10, 0.85); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
     .terminal-header { background: rgba(255, 255, 255, 0.05); padding: 12px 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); }
     .term-dot { width: 12px; height: 12px; border-radius: 50%; }
     .term-red { background: #ff5f56; box-shadow: 0 0 5px #ff5f56; }
@@ -111,20 +115,6 @@
     .terminal-body h3 { color: var(--accent); font-family: var(--font-display); font-size: 1.8em; margin-bottom: 20px; text-transform: uppercase; }
     .about-typed-wrapper { min-height: 180px; } 
 
-    /* ── TECH STACK MATRIX ── */
-    .skills-matrix { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 25px; }
-    .skill-badge { 
-      padding: 8px 16px; background: rgba(220,70,95,0.05); 
-      border: 1px solid var(--border); border-radius: 8px; 
-      font-family: var(--font-body); font-size: 0.85em; color: var(--accent2); 
-      display: flex; align-items: center; gap: 8px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: none;
-    }
-    .skill-badge:hover { 
-      background: var(--accent-dim); color: #fff; border-color: var(--accent);
-      box-shadow: 0 0 20px rgba(220,70,95,0.4); transform: translateY(-4px) scale(1.05); 
-    }
-    .skill-badge i { color: var(--accent); }
-
     /* ── PROJECTS (CAROUSEL) ── */
     .proj-wrapper { width: 100%; max-width: 1000px; display: flex; flex-direction: column; align-items: center; }
     .category-nav { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; }
@@ -133,7 +123,42 @@
     .category-title { font-family: var(--font-display); font-size: 1.5em; color: var(--accent2); margin: 10px 0; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;}
     
     .carousel-container { position: relative; width: 100%; height: 420px; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
-    .proj-card { position: absolute; width: 340px; height: 400px; background: rgba(20, 5, 10, 0.95); border: 1px solid var(--border); border-radius: 10px; padding: 30px 25px; display: flex; flex-direction: column; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    
+    /* ── TECH STACK MATRIX (TERMINAL MODULES) ── */
+    .skills-matrix { 
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+      gap: 15px; margin-top: 30px; 
+    }
+    .skill-badge { 
+      position: relative; background: rgba(10, 2, 5, 0.8); 
+      border: 1px solid var(--border); border-left: 4px solid var(--accent); 
+      padding: 12px 15px; border-radius: 4px; 
+      font-family: var(--font-body); font-size: 0.85em; color: var(--text); 
+      display: flex; align-items: center; gap: 12px; transition: all 0.3s ease; 
+      overflow: hidden; cursor: none; 
+    }
+    .skill-badge::before { 
+      content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; 
+      background: linear-gradient(90deg, transparent, rgba(220,70,95,0.2), transparent); 
+      transition: all 0.5s ease; z-index: 0; 
+    }
+    .skill-badge:hover { 
+      background: rgba(220,70,95,0.1); border-color: var(--accent); 
+      box-shadow: 0 0 15px rgba(220,70,95,0.3); transform: translateX(5px); 
+    }
+    .skill-badge:hover::before { left: 200%; }
+    .skill-badge i { font-size: 1.4em; color: var(--accent); z-index: 1; text-shadow: 0 0 8px var(--accent); }
+    .skill-name { font-weight: 600; letter-spacing: 0.05em; z-index: 1; }
+    .skill-status { 
+      width: 6px; height: 6px; border-radius: 50%; background: #27c93f; 
+      box-shadow: 0 0 8px #27c93f; margin-left: auto; z-index: 1; 
+      animation: blink-status 2s infinite; 
+    }
+    @keyframes blink-status { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+    /* OPTIMIZED GPU RENDERING: will-change added */
+    .proj-card { position: absolute; width: 340px; height: 400px; background: rgba(20, 5, 10, 0.95); border: 1px solid var(--border); border-radius: 10px; padding: 30px 25px; display: flex; flex-direction: column; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); will-change: transform, opacity, filter; }
+    
     .proj-card.hidden { opacity: 0; transform: scale(0.6) translateX(0); z-index: 0; pointer-events: none; }
     .proj-card.prev { opacity: 0.4; filter: blur(5px); transform: scale(0.8) translateX(-150%); z-index: 1; pointer-events: none; }
     .proj-card.next { opacity: 0.4; filter: blur(5px); transform: scale(0.8) translateX(150%); z-index: 1; pointer-events: none; }
@@ -185,10 +210,15 @@
     #music-btn { position: fixed; bottom: 30px; right: 30px; background: rgba(30,8,14,0.8); border: 1px solid var(--border); color: var(--muted); width: 50px; height: 50px; border-radius: 50%; font-size: 18px; cursor: none; z-index: 999; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
     #music-btn:hover { color: var(--text); border-color: var(--accent); background: var(--accent); box-shadow: 0 0 20px var(--accent-dim); transform: scale(1.1); }
 
-    /* ── MOBILE OPTIMIZATION ── */
+    /* ── MOBILE OPTIMIZATION (Bao gồm tắt Blur GPU) ── */
     @media (max-width: 768px) {
       body, a, button, .proj-link, .cert-item, .contact-icon { cursor: auto !important; }
       .cursor-h, .cursor-v, .cursor-dot, #oneko { display: none !important; }
+      
+      /* Tối ưu GPU bằng cách tắt Blur trên điện thoại */
+      nav, .terminal-window, .about-container { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(15, 6, 10, 0.95) !important; }
+      nav.scrolled { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: rgba(10, 3, 5, 0.98) !important; }
+
       nav { gap: 10px; padding: 15px 10px; flex-wrap: wrap; }
       nav a { font-size: 0.75em; letter-spacing: 0.05em; }
       nav.scrolled { padding: 10px; }
@@ -241,13 +271,14 @@
         aboutText: "> Hello! I am an Information Security student with a strong passion for cryptography, secure system design, and AI technologies.<br>> Currently studying at HUCE.<br>> I love building systems from scratch to deeply understand their mathematical foundations and underlying architectures."
       },
       skills: [
-        { name: "Pwn", icon: "fas fa-skull-crossbones" }, // Icon đầu lâu xương chéo đậm chất khai thác lỗ hổng
-        { name: "C / C++", icon: "fas fa-code" }, // Icon mã code kinh điển
-        { name: "LaTeX", icon: "fas fa-file-signature" }, // Icon văn bản học thuật
-        { name: "Assembly", icon: "fas fa-microchip" }, // Icon vi mạch phần cứng
-        { name: "Python AI", icon: "fab fa-python" }, // Icon logo Python chuẩn
-        { name: "xAI", icon: "fas fa-brain" } // Icon bộ não tượng trưng cho Explainable AI
-      
+        { name: "Pwn", icon: "fas fa-skull-crossbones" },
+        { name: "LaTeX", icon: "fas fa-file-signature" },  
+        { name: "C / C++", icon: "fas fa-code" }, 
+        { name: "Assembly", icon: "fas fa-microchip" }, 
+        { name: "Python", icon: "fab fa-python" }, 
+        { name: "AI & xAI", icon: "fas fa-brain" },
+        { name: "Cryptography", icon: "fas fa-lock" },
+        { name: "Malware Analysis", icon: "fas fa-bug" }
       ],
       projectCategories: [
         {
@@ -280,7 +311,7 @@
       publications: [
         {
           title: "IoT Malware Detection Using a Layered Architecture and Machine Learning",
-          conference: "Published Paper (2026)",
+          conference: "RET 2026 - International Conference on Research in Engineering and Technology",
           desc: "Proposed a layered architecture that decomposes classification into multiple stages, combining LightGBM and XGBoost with tier-specific feature engineering to improve detection of both dominant and minority classes.",
           links: [ 
             { text: "View PDF", url: "https://ret.tvu.edu.vn/static/media/paper2026/34.pdf", icon: "fa-file-pdf" }
@@ -413,7 +444,13 @@
     // ── RENDER SKILLS ──
     const skillsContainer = document.getElementById('skills-matrix-container');
     CONFIG.skills.forEach(skill => {
-      skillsContainer.innerHTML += `<div class="skill-badge"><i class="${skill.icon}"></i> ${skill.name}</div>`;
+      skillsContainer.innerHTML += `
+        <div class="skill-badge">
+          <i class="${skill.icon}"></i>
+          <span class="skill-name">${skill.name}</span>
+          <div class="skill-status" title="Module Active"></div>
+        </div>
+      `;
     });
 
     // ── RENDER PUBLICATIONS ──
@@ -581,7 +618,34 @@
 
     allSections.forEach(sec => navObserver.observe(sec));
 
-    // ── AUDIO & CUSTOM CURSOR LOGIC ──
+    // ── GPU OPTIMIZED CUSTOM CURSOR ──
+    const curH = document.getElementById("cur-h"), curV = document.getElementById("cur-v"), curDot = document.getElementById("cur-dot");
+    let mouseX = 0, mouseY = 0, isCursorMoving = false;
+    document.addEventListener("mousemove", e => { 
+      mouseX = e.clientX; mouseY = e.clientY; 
+      if (!isCursorMoving) {
+        requestAnimationFrame(() => {
+          curH.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+          curV.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+          curDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+          isCursorMoving = false;
+        });
+        isCursorMoving = true;
+      }
+    });
+
+    // ── BACKGROUND VIDEO OPTIMIZATION (AUTO PAUSE) ──
+    const bgVideo = document.getElementById('bg-video');
+    const heroSection = document.getElementById('hero');
+    const videoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { bgVideo.play(); } 
+        else { bgVideo.pause(); }
+      });
+    }, { threshold: 0 });
+    videoObserver.observe(heroSection);
+
+    // ── AUDIO ──
     const music = document.getElementById("bg-music");
     const mbtn = document.getElementById("music-btn");
     const micon = mbtn.querySelector("i");
@@ -591,9 +655,6 @@
       else { music.play(); micon.className="fas fa-volume-up"; }
       playing = !playing;
     });
-
-    const curH=document.getElementById("cur-h"), curV=document.getElementById("cur-v"), curDot=document.getElementById("cur-dot");
-    document.addEventListener("mousemove", e => { [curH, curV, curDot].forEach(el => { el.style.left = e.clientX + "px"; el.style.top = e.clientY + "px"; }); });
 
     // ── ONEKO CAT SCRIPT ──
     (function() {
